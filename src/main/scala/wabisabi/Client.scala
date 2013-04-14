@@ -82,6 +82,18 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Search for documents.
+   *
+   * @param index The index to search
+   * @param query The query to execute.
+   */
+  def search(index: String, query: String): Future[Either[Throwable,String]] = {
+    val req = url(esURL) / index / "_search"
+    req << query
+    doRequest(req.GET)
+  }
+
+  /**
    * Optionally add a parameter to the request.
    *
    * @param req The RequestBuilder to modify
@@ -102,6 +114,6 @@ class Client(esURL: String) extends Logging {
   private def doRequest(req: RequestBuilder) = {
     val breq = req.build
     debug("%s: %s".format(breq.getMethod, breq.getUrl))
-    Http(req OK as.String).either
+    Http(req.setHeader("Content-type", "application/json") OK as.String).either
   }
 }

@@ -23,6 +23,7 @@ import wabisabi._
 
 val client = new Client("http://localhost:9200")
 
+// Add a document to the index.
 Await.result(client.index(
   index = "foo", `type` = "foo", id = Some("foo"),
   data = "{\"foo\":\"bar\"}", refresh = true
@@ -31,11 +32,19 @@ Await.result(client.index(
   case Right(body) => println("Worked: " + body)
 }
 
+// Fetch that document by it's id.
 Await.result(client.get("foo", "foo", "foo"), Duration(1, "second")) match {
   case Left(x) => println("Failed to index: " + x.getMessage)
   case Right(body) => println("Worked: " + body)
 }
 
+// Search for all documents.
+Await.result(client.search("foo", "{\"query\": { \"match_all\": {} }"), Duration(1, "second")) match {
+  case Left(x) => failure("Failed to search: " + x.getMessage)
+  case Right(body) => body must contain("\"foo2\"")
+}
+
+// Delete the document.
 Await.result(client.delete("foo", "foo", "foo"), Duration(1, "second")) match {
   case Left(x) => println("Failed to index: " + x.getMessage)
   case Right(body) => println("Worked: " + body)
