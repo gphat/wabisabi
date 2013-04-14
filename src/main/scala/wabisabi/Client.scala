@@ -67,6 +67,17 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Get the mappings for a list of indices.
+   *
+   * @param indices A sequence of index names for which mappings will be fetched.
+   * @param types A sequence of types for which mappings will be fetched.
+   */
+  def getMapping(indices: Seq[String], types: Seq[String]): Future[Either[Throwable,String]] = {
+    val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_mapping"
+    doRequest(req.GET)
+  }
+
+  /**
    * Index a document.
    *
    * Adds or updates a JSON documented of the specified type in the specified
@@ -100,6 +111,19 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Put a mapping for a list of indices.
+   *
+   * @param indices A sequence of index names for which mappings will be added.
+   * @param type The type name to which the mappings will be applied.
+   * @param body The mapping.
+   */
+  def putMapping(indices: Seq[String], `type`: String, body: String): Future[Either[Throwable,String]] = {
+    val req = url(esURL) / indices.mkString(",") / `type` / "_mapping"
+    req << body
+    doRequest(req.PUT)
+  }
+
+  /**
    * Refresh an index.
    *
    * Makes all operations performed since the last refresh available for search.
@@ -123,12 +147,22 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
-   * Verify than an index exists.
+   * Verify that an index exists.
    *
    * @param name The name of the index to verify.
    */
   def verifyIndex(name: String): Future[Either[Throwable,String]] = {
     val req = url(esURL) / name
+    doRequest(req.HEAD)
+  }
+
+  /**
+   * Verify that a type exists.
+   *
+   * @param name The name of the type to verify.
+   */
+  def verifyType(index: String, `type`: String): Future[Either[Throwable,String]] = {
+    val req = url(esURL) / index / `type`
     doRequest(req.HEAD)
   }
 

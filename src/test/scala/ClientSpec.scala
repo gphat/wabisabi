@@ -78,6 +78,44 @@ class ClientSpec extends Specification {
         case Right(body) => body must contain("\"found\"")
       }
 
+      Await.result(client.deleteIndex("foo"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to delete index: " + x.getMessage)
+        case Right(body) => body must contain("acknowledged")
+      }
+
+      1 must beEqualTo(1)
+    }
+
+    "properly manipulate mappings" in {
+      val client = new Client("http://localhost:9200")
+
+      Await.result(client.createIndex(name = "foo"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to create index: " + x.getMessage)
+        case Right(body) => body must contain("acknowledged")
+      }
+
+      Await.result(client.putMapping(Seq("foo"), "foo", "{\"tweet\": { \"properties\": { \"message\": { \"type\": \"string\", \"store\": \"yes\" } } } }"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to create mapping: " + x.getMessage)
+        case Right(body) => body must contain("acknowledged")
+      }
+
+      Await.result(client.verifyType("foo", "foo"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to verify type: " + x.getMessage)
+        case Right(body) => {
+          // Nothing to do, as it just returns 2XX on success
+        }
+      }
+
+      Await.result(client.getMapping(Seq("foo"), Seq("foo")), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to create mapping: " + x.getMessage)
+        case Right(body) => body must contain("store")
+      }
+
+      Await.result(client.deleteIndex("foo"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to delete index: " + x.getMessage)
+        case Right(body) => body must contain("acknowledged")
+      }
+
       1 must beEqualTo(1)
     }
   }
