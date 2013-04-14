@@ -23,6 +23,20 @@ import wabisabi._
 
 val client = new Client("http://localhost:9200")
 
+// Create the index
+Await.result(client.createIndex(name = "foo"), Duration(1, "second")) match {
+  case Left(x) => failure("Failed to create index: " + x.getMessage)
+  case Right(body) => println("Worked: " + body)
+}
+
+// Verify the index exists
+Await.result(client.verifyIndex("foo"), Duration(1, "second")) match {
+  case Left(x) => failure("Failed to verify index: " + x.getMessage)
+  case Right(body) => {
+    // Nothing to do, as it just returns 2XX on success
+  }
+}
+
 // Add a document to the index.
 Await.result(client.index(
   index = "foo", `type` = "foo", id = Some("foo"),
@@ -41,7 +55,7 @@ Await.result(client.get("foo", "foo", "foo"), Duration(1, "second")) match {
 // Search for all documents.
 Await.result(client.search("foo", "{\"query\": { \"match_all\": {} }"), Duration(1, "second")) match {
   case Left(x) => failure("Failed to search: " + x.getMessage)
-  case Right(body) => body must contain("\"foo2\"")
+  case Right(body) => println("Worked: " + body)
 }
 
 // Delete the document.
@@ -49,5 +63,13 @@ Await.result(client.delete("foo", "foo", "foo"), Duration(1, "second")) match {
   case Left(x) => println("Failed to index: " + x.getMessage)
   case Right(body) => println("Worked: " + body)
 }
+
+// Delete the index
+Await.result(client.deleteIndex("foo"), Duration(1, "second")) match {
+  case Left(x) => failure("Failed to delete index: " + x.getMessage)
+  case Right(body) => println("Worked: " + body)
+}
+
+
 ```
 

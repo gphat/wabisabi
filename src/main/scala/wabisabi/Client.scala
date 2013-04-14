@@ -12,6 +12,22 @@ class Client(esURL: String) extends Logging {
   // XXX multiget,
 
   /**
+   * Create an index, optionally using the supplied settings.
+   *
+   * @param name The name of the index.
+   * @param settings Optional settings
+   */
+  def createIndex(name: String, settings: Option[String] = None): Future[Either[Throwable, String]] = {
+    val req = url(esURL) / name
+    // Add the settings if we have any
+    settings.map({ s => req << s })
+
+    // Do something hinky to get the trailing slash on the URL
+    val trailedReq = new RequestBuilder().setUrl(req.build.getUrl + "/")
+    doRequest(trailedReq.PUT)
+  }
+
+  /**
    * Delete a document from the index.
    *
    * @param index The name of the index.
@@ -22,6 +38,19 @@ class Client(esURL: String) extends Logging {
     // XXX Need to add parameters: version, routing, parent, replication,
     // consistency, refresh
     val req = url(esURL) / index / `type` / id
+
+    // Do something hinky to get the trailing slash on the URL
+    val trailedReq = new RequestBuilder().setUrl(req.build.getUrl + "/")
+    doRequest(trailedReq.DELETE)
+  }
+
+  /**
+   * Delete an index
+   *
+   * @param name The name of the index to delete.
+   */
+  def deleteIndex(name: String): Future[Either[Throwable,String]] = {
+    val req = url(esURL) / name
     doRequest(req.DELETE)
   }
 
@@ -91,6 +120,16 @@ class Client(esURL: String) extends Logging {
     val req = url(esURL) / index / "_search"
     req << query
     doRequest(req.GET)
+  }
+
+  /**
+   * Verify than an index exists.
+   *
+   * @param name The name of the index to verify.
+   */
+  def verifyIndex(name: String): Future[Either[Throwable,String]] = {
+    val req = url(esURL) / name
+    doRequest(req.HEAD)
   }
 
   /**

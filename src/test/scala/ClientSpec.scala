@@ -10,6 +10,29 @@ class ClientSpec extends Specification {
   sequential
 
   "Client" should {
+    "create and delete indexes" in {
+      val client = new Client("http://localhost:9200")
+
+      Await.result(client.createIndex(name = "foo"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to create index: " + x.getMessage)
+        case Right(body) => body must contain("acknowledged")
+      }
+
+      Await.result(client.verifyIndex("foo"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to verify index: " + x.getMessage)
+        case Right(body) => {
+          // Nothing to do, as it just returns 2XX on success
+        }
+      }
+
+      Await.result(client.deleteIndex("foo"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to delete index: " + x.getMessage)
+        case Right(body) => body must contain("acknowledged")
+      }
+
+      1 must beEqualTo(1)
+    }
+
     "index and fetch a document" in {
       val client = new Client("http://localhost:9200")
 
