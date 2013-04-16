@@ -91,6 +91,40 @@ class ClientSpec extends Specification {
       1 must beEqualTo(1)
     }
 
+    "delete a document by query" in {
+      val client = new Client("http://localhost:9200")
+
+      Await.result(client.index(
+        index = "foo", `type` = "foo", id = Some("foo2"),
+        data = "{\"foo\":\"bar\"}", refresh = true
+      ), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to index: " + x.getMessage)
+        case Right(body) => body must contain("\"_version\"")
+      }
+
+      Await.result(client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to search: " + x.getMessage)
+        case Right(body) => body must contain("\"count\":1")
+      }
+
+      Await.result(client.deleteByQuery(Seq("foo"), Seq.empty[String], "{ \"match_all\": {} }"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to delete by query: " + x.getMessage)
+        case Right(body) => body must contain("\"successful\"")
+      }
+
+      Await.result(client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to search: " + x.getMessage)
+        case Right(body) => body must contain("\"count\":0")
+      }
+
+      Await.result(client.deleteIndex("foo"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to delete index: " + x.getMessage)
+        case Right(body) => body must contain("acknowledged")
+      }
+
+      1 must beEqualTo(1)
+    }
+
     "properly manipulate mappings" in {
       val client = new Client("http://localhost:9200")
 

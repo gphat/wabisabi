@@ -58,6 +58,23 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Delete documents that match a query.
+   *
+   * @param indices A sequence of index names for which mappings will be fetched.
+   * @param types A sequence of types for which mappings will be fetched.
+   * @param query The query to count documents from.
+   */
+  def deleteByQuery(indices: Seq[String], `types`: Seq[String], query: String): Future[Either[Throwable, String]] = {
+    // XXX Need to add parameters: df, analyzer, default_operator
+    val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_query"
+
+    println(query)
+    req << query
+
+    doRequest(req.DELETE)
+  }
+
+  /**
    * Delete an index
    *
    * @param name The name of the index to delete.
