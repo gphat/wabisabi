@@ -11,6 +11,13 @@ class Client(esURL: String) extends Logging {
 
   // XXX multiget, update, multisearch, percolate, bulk
 
+  /**
+   * Request a count of the documents matching a query.
+   *
+   * @param indices A sequence of index names for which mappings will be fetched.
+   * @param types A sequence of types for which mappings will be fetched.
+   * @param query The query to count documents from.
+   */
   def count(indices: Seq[String], types: Seq[String], query: String): Future[Either[Throwable, String]] = {
     val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_count"
     req << query
