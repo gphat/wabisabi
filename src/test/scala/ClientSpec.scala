@@ -157,5 +157,27 @@ class ClientSpec extends Specification {
 
       1 must beEqualTo(1)
     }
+
+    "validate queries" in {
+      val client = new Client("http://localhost:9200")
+
+      Await.result(client.createIndex(name = "foo"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to create index: " + x.getMessage)
+        case Right(body) => body must contain("acknowledged")
+      }
+
+      Await.result(client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to validate query: " + x.getMessage)
+        case Right(body) => body must contain("\"valid\":true")
+      }
+
+      Await.result(client.deleteIndex("foo"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to delete index: " + x.getMessage)
+        case Right(body) => body must contain("acknowledged")
+      }
+
+      1 must beEqualTo(1)
+    }
+
   }
 }

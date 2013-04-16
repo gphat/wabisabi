@@ -9,7 +9,8 @@ import scala.concurrent.Promise
 
 class Client(esURL: String) extends Logging {
 
-  // XXX multiget, update, multisearch, percolate, bulk
+  // XXX multiget, update, multisearch, percolate, bulk, more like this,
+  //
 
   /**
    * Request a count of the documents matching a query.
@@ -68,7 +69,6 @@ class Client(esURL: String) extends Logging {
     // XXX Need to add parameters: df, analyzer, default_operator
     val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_query"
 
-    println(query)
     req << query
 
     doRequest(req.DELETE)
@@ -174,6 +174,29 @@ class Client(esURL: String) extends Logging {
     val req = url(esURL) / index / "_search"
     req << query
     doRequest(req.GET)
+  }
+
+  /**
+   * Validate a query.
+   *
+   * @param index The name of the index.
+   * @param type The optional type of document to delete.
+   * @param query The query.
+   * @param explain If true, then the response will contain more detailed information about the query.
+   */
+  def validate(index: String, `type`: Option[String] = None, query: String, explain: Boolean = false): Future[Either[Throwable, String]] = {
+    val req = url(esURL) / index / `type`.getOrElse("") / "_validate" / "query"
+
+    // Handle the refresh param
+    val preq = if(explain) {
+      addParam(req, "explain", Some("true"))
+    } else {
+      req
+    }
+
+    preq << query
+
+    doRequest(preq.GET)
   }
 
   /**
