@@ -158,7 +158,7 @@ class ClientSpec extends Specification {
       1 must beEqualTo(1)
     }
 
-    "validate queries" in {
+    "validate and explain queries" in {
       val client = new Client("http://localhost:9200")
 
       Await.result(client.createIndex(name = "foo"), Duration(1, "second")) match {
@@ -166,9 +166,22 @@ class ClientSpec extends Specification {
         case Right(body) => body must contain("acknowledged")
       }
 
+      Await.result(client.index(
+        index = "foo", `type` = "foo", id = Some("foo2"),
+        data = "{\"foo\":\"bar\"}", refresh = true
+      ), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to index: " + x.getMessage)
+        case Right(body) => body must contain("\"_version\"")
+      }
+
       Await.result(client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }"), Duration(1, "second")) match {
         case Left(x) => failure("Failed to validate query: " + x.getMessage)
-        case Right(body) => body must contain("\"valid\":true")
+        case Right(body) => body must contain("\"valid\"")
+      }
+
+      Await.result(client.explain(index = "foo", `type` = "foo", id = "foo2", query = "{\"query\": { \"term\": { \"foo\":\"bar\"} } }"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to explain query: " + x.getMessage)
+        case Right(body) => body must contain("explanation")
       }
 
       Await.result(client.deleteIndex("foo"), Duration(1, "second")) match {

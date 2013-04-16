@@ -85,6 +85,24 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Explain a query and document.
+   *
+   * @param index The name of the index.
+   * @param type The optional type document to explain.
+   * @param id The ID of the document.
+   * @param query The query.
+   * @param explain If true, then the response will contain more detailed information about the query.
+   */
+  def explain(index: String, `type`: String, id: String, query: String): Future[Either[Throwable, String]] = {
+    // XXX Lots of params to add
+    val req = url(esURL) / index / `type` / id / "_explain"
+
+    req << query
+
+    doRequest(req.POST)
+  }
+
+  /**
    * Get a document by ID.
    *
    * @param index The name of the index.
@@ -180,7 +198,7 @@ class Client(esURL: String) extends Logging {
    * Validate a query.
    *
    * @param index The name of the index.
-   * @param type The optional type of document to delete.
+   * @param type The optional type of document to validate against.
    * @param query The query.
    * @param explain If true, then the response will contain more detailed information about the query.
    */
@@ -196,7 +214,7 @@ class Client(esURL: String) extends Logging {
 
     preq << query
 
-    doRequest(preq.GET)
+    doRequest(preq.POST)
   }
 
   /**
