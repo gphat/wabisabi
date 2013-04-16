@@ -58,6 +58,18 @@ Await.result(client.search("foo", "{\"query\": { \"match_all\": {} }"), Duration
   case Right(body) => println("Worked: " + body)
 }
 
+// Validate a query.
+Await.result(client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }"), Duration(1, "second")) match {
+  case Left(x) => println("Failed to validate query: " + x.getMessage)
+  case Right(body) => println("Worked: " + body)
+}
+
+// Explain a query.
+Await.result(client.explain(index = "foo", `type` = "foo", id = "foo2", query = "{\"query\": { \"term\": { \"foo\":\"bar\"} } }"), Duration(1, "second")) match {
+  case Left(x) => println("Failed to explain query: " + x.getMessage)
+  case Right(body) => println("Worked: " + body)
+}
+
 // Delete the document.
 Await.result(client.delete("foo", "foo", "foo"), Duration(1, "second")) match {
   case Left(x) => println("Failed to index: " + x.getMessage)
