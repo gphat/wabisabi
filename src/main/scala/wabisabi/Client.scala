@@ -9,7 +9,13 @@ import scala.concurrent.Promise
 
 class Client(esURL: String) extends Logging {
 
-  // XXX multiget,
+  // XXX multiget, update, multisearch, percolate, bulk
+
+  def count(indices: Seq[String], types: Seq[String], query: String): Future[Either[Throwable, String]] = {
+    val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_count"
+    req << query
+    doRequest(req.GET)
+  }
 
   /**
    * Create an index, optionally using the supplied settings.

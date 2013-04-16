@@ -73,6 +73,11 @@ class ClientSpec extends Specification {
         case Right(body) => body must contain("\"foo2\"")
       }
 
+      Await.result(client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }"), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to search: " + x.getMessage)
+        case Right(body) => body must contain("\"count\"")
+      }
+
       Await.result(client.delete("foo", "foo", "foo2"), Duration(1, "second")) match {
         case Left(x) => failure("Failed to delete: " + x.getMessage)
         case Right(body) => body must contain("\"found\"")
