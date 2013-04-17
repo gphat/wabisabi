@@ -126,6 +126,32 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Query ElastichSearch for it's health.
+   *
+   * @param indices Optional list of index names. Defaults to empty.
+   * @param level Can be one of cluster, indices or shards. Controls the details level of the health information returned.
+   * @param waitForStatus One of green, yellow or red. Will wait until the status of the cluster changes to the one provided, or until the timeout expires.
+   * @param waitForRelocatingShards A number controlling to how many relocating shards to wait for.
+   * @param waitForNodes The request waits until the specified number N of nodes is available. Is a string because >N and ge(N) type notations are allowed.
+   * @param timeout A time based parameter controlling how long to wait if one of the waitForXXX are provided.
+   */
+  def health(
+    indices: Seq[String] = Seq.empty[String], level: Option[String] = None,
+    waitForStatus: Option[String] = None, waitForRelocatingShards: Option[Int] = None,
+    waitForNodes: Option[String] = None, timeout: Option[String] = None
+  ): Future[Either[Throwable,String]] = {
+    val req = url(esURL) / "_cluster" / "health" / indices.mkString(",")
+
+    addParam(req, "level", level)
+    addParam(req, "wait_for_status", waitForStatus)
+    addParam(req, "wait_for_relocation_shards", waitForRelocatingShards.flatMap({ s => Some(s.toString) }))
+    addParam(req, "wait_for_nodes", waitForNodes)
+    addParam(req, "timeout", timeout)
+
+    doRequest(req.GET)
+  }
+
+  /**
    * Index a document.
    *
    * Adds or updates a JSON documented of the specified type in the specified
@@ -146,10 +172,8 @@ class Client(esURL: String) extends Logging {
     var req = id.map({ id => baseRequest / id }).getOrElse(baseRequest)
 
     // Handle the refresh param
-    req = if(refresh) {
+    if(refresh) {
       addParam(req, "refresh", Some("true"))
-    } else {
-      req
     }
 
     // Add the data to the request
@@ -206,15 +230,13 @@ class Client(esURL: String) extends Logging {
     val req = url(esURL) / index / `type`.getOrElse("") / "_validate" / "query"
 
     // Handle the refresh param
-    val preq = if(explain) {
+    if(explain) {
       addParam(req, "explain", Some("true"))
-    } else {
-      req
     }
 
-    preq << query
+    req << query
 
-    doRequest(preq.POST)
+    doRequest(req.POST)
   }
 
   /**
@@ -246,9 +268,9 @@ class Client(esURL: String) extends Logging {
    */
   private def addParam(
     req: RequestBuilder, name: String, value: Option[String]
-  ): RequestBuilder = value.map({ v =>
+  ) = value.map({ v =>
     req.addQueryParameter(name, v)
-  }).getOrElse(req)
+  })
 
   /**
    * Perform the request with some debugging for good measure.

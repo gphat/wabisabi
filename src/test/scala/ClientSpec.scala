@@ -192,5 +192,20 @@ class ClientSpec extends Specification {
       1 must beEqualTo(1)
     }
 
+    "handle health checking" in {
+      val client = new Client("http://localhost:9200")
+
+      Await.result(client.health(), Duration(1, "second")) match {
+        case Left(x) => failure("Failed to check health:" + x.getMessage)
+        case Right(body) => body must contain("number_of_nodes")
+      }
+
+      // Await.result(client.health(Seq("foo")), Duration(1, "second")) match {
+      //   case Left(x) => failure("Failed to check health of index:" + x.getMessage)
+      //   case Right(body) => body must contain("number_of_nodes")
+      // }
+
+      1 must beEqualTo(1)
+    }
   }
 }
