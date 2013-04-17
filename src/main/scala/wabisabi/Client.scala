@@ -19,7 +19,7 @@ class Client(esURL: String) extends Logging {
    * @param types A sequence of types for which mappings will be fetched.
    * @param query The query to count documents from.
    */
-  def count(indices: Seq[String], types: Seq[String], query: String): Future[Either[Throwable, String]] = {
+  def count(indices: Seq[String], types: Seq[String], query: String): Future[String] = {
     val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_count"
     req << query
     doRequest(req.GET)
@@ -31,7 +31,7 @@ class Client(esURL: String) extends Logging {
    * @param name The name of the index.
    * @param settings Optional settings
    */
-  def createIndex(name: String, settings: Option[String] = None): Future[Either[Throwable, String]] = {
+  def createIndex(name: String, settings: Option[String] = None): Future[String] = {
     val req = url(esURL) / name
     // Add the settings if we have any
     settings.map({ s => req << s })
@@ -48,7 +48,7 @@ class Client(esURL: String) extends Logging {
    * @param type The type of document to delete.
    * @param id The ID of the document.
    */
-  def delete(index: String, `type`: String, id: String): Future[Either[Throwable, String]] = {
+  def delete(index: String, `type`: String, id: String): Future[String] = {
     // XXX Need to add parameters: version, routing, parent, replication,
     // consistency, refresh
     val req = url(esURL) / index / `type` / id
@@ -65,7 +65,7 @@ class Client(esURL: String) extends Logging {
    * @param types A sequence of types for which mappings will be fetched.
    * @param query The query to count documents from.
    */
-  def deleteByQuery(indices: Seq[String], `types`: Seq[String], query: String): Future[Either[Throwable, String]] = {
+  def deleteByQuery(indices: Seq[String], `types`: Seq[String], query: String): Future[String] = {
     // XXX Need to add parameters: df, analyzer, default_operator
     val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_query"
 
@@ -79,7 +79,7 @@ class Client(esURL: String) extends Logging {
    *
    * @param name The name of the index to delete.
    */
-  def deleteIndex(name: String): Future[Either[Throwable,String]] = {
+  def deleteIndex(name: String): Future[String] = {
     val req = url(esURL) / name
     doRequest(req.DELETE)
   }
@@ -93,7 +93,7 @@ class Client(esURL: String) extends Logging {
    * @param query The query.
    * @param explain If true, then the response will contain more detailed information about the query.
    */
-  def explain(index: String, `type`: String, id: String, query: String): Future[Either[Throwable, String]] = {
+  def explain(index: String, `type`: String, id: String, query: String): Future[String] = {
     // XXX Lots of params to add
     val req = url(esURL) / index / `type` / id / "_explain"
 
@@ -109,7 +109,7 @@ class Client(esURL: String) extends Logging {
    * @param type The type of the document.
    * @param id The id of the document.
    */
-  def get(index: String, `type`: String, id: String): Future[Either[Throwable, String]] = {
+  def get(index: String, `type`: String, id: String): Future[String] = {
     val req = url(esURL) / index / `type` / id
     doRequest(req.GET)
   }
@@ -120,7 +120,7 @@ class Client(esURL: String) extends Logging {
    * @param indices A sequence of index names for which mappings will be fetched.
    * @param types A sequence of types for which mappings will be fetched.
    */
-  def getMapping(indices: Seq[String], types: Seq[String]): Future[Either[Throwable,String]] = {
+  def getMapping(indices: Seq[String], types: Seq[String]): Future[String] = {
     val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_mapping"
     doRequest(req.GET)
   }
@@ -139,7 +139,7 @@ class Client(esURL: String) extends Logging {
     indices: Seq[String] = Seq.empty[String], level: Option[String] = None,
     waitForStatus: Option[String] = None, waitForRelocatingShards: Option[Int] = None,
     waitForNodes: Option[String] = None, timeout: Option[String] = None
-  ): Future[Either[Throwable,String]] = {
+  ): Future[String] = {
     val req = url(esURL) / "_cluster" / "health" / indices.mkString(",")
 
     addParam(req, "level", level)
@@ -165,7 +165,7 @@ class Client(esURL: String) extends Logging {
   def index(
     index: String, `type`: String, id: Option[String] = None, data: String,
     refresh: Boolean = false
-  ): Future[Either[Throwable, String]] = {
+  ): Future[String] = {
     // XXX Need to add parameters: version, op_type, routing, parents & children,
     // timestamp, ttl, percolate, timeout, replication, consistency
     val baseRequest = url(esURL) / index / `type`
@@ -189,7 +189,7 @@ class Client(esURL: String) extends Logging {
    * @param type The type name to which the mappings will be applied.
    * @param body The mapping.
    */
-  def putMapping(indices: Seq[String], `type`: String, body: String): Future[Either[Throwable,String]] = {
+  def putMapping(indices: Seq[String], `type`: String, body: String): Future[String] = {
     val req = url(esURL) / indices.mkString(",") / `type` / "_mapping"
     req << body
     doRequest(req.PUT)
@@ -212,7 +212,7 @@ class Client(esURL: String) extends Logging {
    * @param index The index to search
    * @param query The query to execute.
    */
-  def search(index: String, query: String): Future[Either[Throwable,String]] = {
+  def search(index: String, query: String): Future[String] = {
     val req = url(esURL) / index / "_search"
     req << query
     doRequest(req.GET)
@@ -226,7 +226,7 @@ class Client(esURL: String) extends Logging {
    * @param query The query.
    * @param explain If true, then the response will contain more detailed information about the query.
    */
-  def validate(index: String, `type`: Option[String] = None, query: String, explain: Boolean = false): Future[Either[Throwable, String]] = {
+  def validate(index: String, `type`: Option[String] = None, query: String, explain: Boolean = false): Future[String] = {
     val req = url(esURL) / index / `type`.getOrElse("") / "_validate" / "query"
 
     // Handle the refresh param
@@ -244,7 +244,7 @@ class Client(esURL: String) extends Logging {
    *
    * @param name The name of the index to verify.
    */
-  def verifyIndex(name: String): Future[Either[Throwable,String]] = {
+  def verifyIndex(name: String): Future[String] = {
     val req = url(esURL) / name
     doRequest(req.HEAD)
   }
@@ -254,7 +254,7 @@ class Client(esURL: String) extends Logging {
    *
    * @param name The name of the type to verify.
    */
-  def verifyType(index: String, `type`: String): Future[Either[Throwable,String]] = {
+  def verifyType(index: String, `type`: String): Future[String] = {
     val req = url(esURL) / index / `type`
     doRequest(req.HEAD)
   }
@@ -280,6 +280,6 @@ class Client(esURL: String) extends Logging {
   private def doRequest(req: RequestBuilder) = {
     val breq = req.build
     debug("%s: %s".format(breq.getMethod, breq.getUrl))
-    Http(req.setHeader("Content-type", "application/json") OK as.String).either
+    Http(req.setHeader("Content-type", "application/json") OK as.String)
   }
 }
