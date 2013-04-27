@@ -215,7 +215,7 @@ class Client(esURL: String) extends Logging {
   def search(index: String, query: String): Future[String] = {
     val req = url(esURL) / index / "_search"
     req << query
-    doRequest(req.GET)
+    doRequest(req.POST)
   }
 
   /**
