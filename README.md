@@ -5,14 +5,24 @@ extremely minimal, eschewing any sort of parsing, formatting or other such
 complication.
 
 Wabisabi is based on the [dispatch](http://dispatch.databinder.net/Dispatch.html)
-asynchronous HTTP library. It is, therefore, somewhat different to use as all
-of the returned values are `Future[String]`.
+asynchronous HTTP library. Therefore, all of the returned values are
+`Future[String]`.
+
+## Dependencies
+
+Depends on [dispatch](http://dispatch.databinder.net/Dispatch.html) and
+[grizzled-slf4j](http://software.clapper.org/grizzled-slf4j/).
 
 ## Notes
 
-This library is dreadfully incomplete. It's also possibly wrong, as maybe I'll
-change my mind.  But it is spiritually about right, imposing almost no choices
-– save `Future` – on the user.
+This does not implement every piece of the ElasticSearch API. I will add other
+bits as needed or as patches arrive.
+
+# Using It
+
+```
+libraryDependencies += "wabisabi" %% "wabisabi" % "1.0.0"
+```
 
 ## Example
 
@@ -62,4 +72,3 @@ client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }")
 // Delete the index
 client.deleteIndex("foo")
 ```
-
