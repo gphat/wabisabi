@@ -22,7 +22,11 @@ bits as needed or as patches arrive.
 # Using It
 
 ```
+// Add the Dep
 libraryDependencies += "wabisabi" %% "wabisabi" % "1.0.0"
+
+// And a the resolver
+resolvers += "gphat" at "https://raw.github.com/gphat/mvn-repo/master/releases/",
 ```
 
 ## Example
