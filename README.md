@@ -11,7 +11,8 @@ asynchronous HTTP library. Therefore, all of the returned values are
 ## Dependencies
 
 Depends on [dispatch](http://dispatch.databinder.net/Dispatch.html) and
-[grizzled-slf4j](http://software.clapper.org/grizzled-slf4j/).
+[grizzled-slf4j](http://software.clapper.org/grizzled-slf4j/). It's compiled for
+scala 2.10.
 
 ## Notes
 
