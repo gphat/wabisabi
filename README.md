@@ -1,6 +1,7 @@
 # Wabisabi
 
-Wabisabi is a REST [ElasticSearch](http://www.elasticsearch.org/) client. It is
+Wabisabi is a Scala [ElasticSearch](http://www.elasticsearch.org/) client that
+uses the REST API and has no dependency on ElasticSearch itself. It is
 extremely minimal, eschewing any sort of parsing, formatting or other such
 complication.
 
