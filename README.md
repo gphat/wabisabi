@@ -22,6 +22,9 @@ scala 2.10.
 
 ## Notes
 
+Version 2.0.0 switched to returning `Future[Response]` rather than `Future[String]`
+so that errors can be handled.
+
 This does not implement every piece of the ElasticSearch API. I will add other
 bits as needed or as patches arrive.
 
