@@ -37,7 +37,7 @@ class ClientSpec extends Specification {
       val client = new Client("http://localhost:9200")
 
       Await.result(client.index(
-        index = "foo", `type` = "foo", id = Some("foo"),
+        index = "foo", `type` = "foo",
         data = "{\"foo\":\"bar\"}", refresh = true
       ), Duration(1, "second")).getResponseBody must contain("\"_version\"")
 

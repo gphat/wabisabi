@@ -170,10 +170,7 @@ class Client(esURL: String) extends Logging {
     // timestamp, ttl, percolate, timeout, replication, consistency
     val baseRequest = url(esURL) / index / `type`
 
-    var req = id.map({ id => baseRequest / id }).getOrElse(
-      // Do something hinky to get the trailing slash on the URL
-      new RequestBuilder().setUrl(baseRequest.build.getUrl + "/")
-    )
+    var req = id.map({ id => baseRequest / id }).getOrElse(baseRequest)
 
     // Handle the refresh param
     if(refresh) {
@@ -183,7 +180,8 @@ class Client(esURL: String) extends Logging {
     // Add the data to the request
     req << data
 
-    doRequest(req.PUT)
+    id.map({ i => doRequest(req.PUT) }).getOrElse(doRequest(req.POST))
+
   }
 
   /**
