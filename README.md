@@ -51,7 +51,7 @@ client.health()
 client.createIndex(name = "foo")
 
 // Verify the index exists
-client.verifyIndex("foo")
+client.verifyIndex("foo").getStatusCode // Should be 200!
 
 // Add a document to the index.
 client.index(
@@ -66,7 +66,7 @@ client.get("foo", "foo", "foo").getResponseBody
 client.search("foo", "{\"query\": { \"match_all\": {} }").getResponseBody
 
 // Validate a query.
-client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }")
+client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }").getStatusCode // Should be 200
 
 // Explain a query.
 client.explain(index = "foo", `type` = "foo", id = "foo2", query = "{\"query\": { \"term\": { \"foo\":\"bar\"} } }")
