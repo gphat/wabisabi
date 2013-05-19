@@ -1,6 +1,6 @@
 package wabisabi
 
-import com.ning.http.client.RequestBuilder
+import com.ning.http.client.{RequestBuilder,Response}
 import dispatch._
 import Defaults._
 import grizzled.slf4j.Logging
@@ -19,7 +19,7 @@ class Client(esURL: String) extends Logging {
    * @param types A sequence of types for which mappings will be fetched.
    * @param query The query to count documents from.
    */
-  def count(indices: Seq[String], types: Seq[String], query: String): Future[String] = {
+  def count(indices: Seq[String], types: Seq[String], query: String): Future[Response] = {
     val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_count"
     req << query
     doRequest(req.GET)
@@ -31,7 +31,7 @@ class Client(esURL: String) extends Logging {
    * @param name The name of the index.
    * @param settings Optional settings
    */
-  def createIndex(name: String, settings: Option[String] = None): Future[String] = {
+  def createIndex(name: String, settings: Option[String] = None): Future[Response] = {
     val req = url(esURL) / name
     // Add the settings if we have any
     settings.map({ s => req << s })
@@ -48,7 +48,7 @@ class Client(esURL: String) extends Logging {
    * @param type The type of document to delete.
    * @param id The ID of the document.
    */
-  def delete(index: String, `type`: String, id: String): Future[String] = {
+  def delete(index: String, `type`: String, id: String): Future[Response] = {
     // XXX Need to add parameters: version, routing, parent, replication,
     // consistency, refresh
     val req = url(esURL) / index / `type` / id
@@ -65,7 +65,7 @@ class Client(esURL: String) extends Logging {
    * @param types A sequence of types for which mappings will be fetched.
    * @param query The query to count documents from.
    */
-  def deleteByQuery(indices: Seq[String], `types`: Seq[String], query: String): Future[String] = {
+  def deleteByQuery(indices: Seq[String], `types`: Seq[String], query: String): Future[Response] = {
     // XXX Need to add parameters: df, analyzer, default_operator
     val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_query"
 
@@ -79,7 +79,7 @@ class Client(esURL: String) extends Logging {
    *
    * @param name The name of the index to delete.
    */
-  def deleteIndex(name: String): Future[String] = {
+  def deleteIndex(name: String): Future[Response] = {
     val req = url(esURL) / name
     doRequest(req.DELETE)
   }
@@ -93,7 +93,7 @@ class Client(esURL: String) extends Logging {
    * @param query The query.
    * @param explain If true, then the response will contain more detailed information about the query.
    */
-  def explain(index: String, `type`: String, id: String, query: String): Future[String] = {
+  def explain(index: String, `type`: String, id: String, query: String): Future[Response] = {
     // XXX Lots of params to add
     val req = url(esURL) / index / `type` / id / "_explain"
 
@@ -109,7 +109,7 @@ class Client(esURL: String) extends Logging {
    * @param type The type of the document.
    * @param id The id of the document.
    */
-  def get(index: String, `type`: String, id: String): Future[String] = {
+  def get(index: String, `type`: String, id: String): Future[Response] = {
     val req = url(esURL) / index / `type` / id
     doRequest(req.GET)
   }
@@ -120,7 +120,7 @@ class Client(esURL: String) extends Logging {
    * @param indices A sequence of index names for which mappings will be fetched.
    * @param types A sequence of types for which mappings will be fetched.
    */
-  def getMapping(indices: Seq[String], types: Seq[String]): Future[String] = {
+  def getMapping(indices: Seq[String], types: Seq[String]): Future[Response] = {
     val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_mapping"
     doRequest(req.GET)
   }
@@ -139,7 +139,7 @@ class Client(esURL: String) extends Logging {
     indices: Seq[String] = Seq.empty[String], level: Option[String] = None,
     waitForStatus: Option[String] = None, waitForRelocatingShards: Option[Int] = None,
     waitForNodes: Option[String] = None, timeout: Option[String] = None
-  ): Future[String] = {
+  ): Future[Response] = {
     val req = url(esURL) / "_cluster" / "health" / indices.mkString(",")
 
     addParam(req, "level", level)
@@ -165,11 +165,15 @@ class Client(esURL: String) extends Logging {
   def index(
     index: String, `type`: String, id: Option[String] = None, data: String,
     refresh: Boolean = false
-  ): Future[String] = {
+  ): Future[Response] = {
     // XXX Need to add parameters: version, op_type, routing, parents & children,
     // timestamp, ttl, percolate, timeout, replication, consistency
     val baseRequest = url(esURL) / index / `type`
-    var req = id.map({ id => baseRequest / id }).getOrElse(baseRequest)
+
+    var req = id.map({ id => baseRequest / id }).getOrElse(
+      // Do something hinky to get the trailing slash on the URL
+      new RequestBuilder().setUrl(baseRequest.build.getUrl + "/")
+    )
 
     // Handle the refresh param
     if(refresh) {
@@ -189,7 +193,7 @@ class Client(esURL: String) extends Logging {
    * @param type The type name to which the mappings will be applied.
    * @param body The mapping.
    */
-  def putMapping(indices: Seq[String], `type`: String, body: String): Future[String] = {
+  def putMapping(indices: Seq[String], `type`: String, body: String): Future[Response] = {
     val req = url(esURL) / indices.mkString(",") / `type` / "_mapping"
     req << body
     doRequest(req.PUT)
@@ -212,7 +216,7 @@ class Client(esURL: String) extends Logging {
    * @param index The index to search
    * @param query The query to execute.
    */
-  def search(index: String, query: String): Future[String] = {
+  def search(index: String, query: String): Future[Response] = {
     val req = url(esURL) / index / "_search"
     req << query
     doRequest(req.POST)
@@ -226,7 +230,9 @@ class Client(esURL: String) extends Logging {
    * @param query The query.
    * @param explain If true, then the response will contain more detailed information about the query.
    */
-  def validate(index: String, `type`: Option[String] = None, query: String, explain: Boolean = false): Future[String] = {
+  def validate(
+    index: String, `type`: Option[String] = None, query: String, explain: Boolean = false
+  ): Future[Response] = {
     val req = url(esURL) / index / `type`.getOrElse("") / "_validate" / "query"
 
     // Handle the refresh param
@@ -244,7 +250,7 @@ class Client(esURL: String) extends Logging {
    *
    * @param name The name of the index to verify.
    */
-  def verifyIndex(name: String): Future[String] = {
+  def verifyIndex(name: String): Future[Response] = {
     val req = url(esURL) / name
     doRequest(req.HEAD)
   }
@@ -254,7 +260,7 @@ class Client(esURL: String) extends Logging {
    *
    * @param name The name of the type to verify.
    */
-  def verifyType(index: String, `type`: String): Future[String] = {
+  def verifyType(index: String, `type`: String): Future[Response] = {
     val req = url(esURL) / index / `type`
     doRequest(req.HEAD)
   }
@@ -280,6 +286,6 @@ class Client(esURL: String) extends Logging {
   private def doRequest(req: RequestBuilder) = {
     val breq = req.build
     debug("%s: %s".format(breq.getMethod, breq.getUrl))
-    Http(req.setHeader("Content-type", "application/json") OK as.String)
+    Http(req.setHeader("Content-type", "application/json"))
   }
 }
