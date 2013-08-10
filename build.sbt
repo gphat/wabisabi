@@ -2,13 +2,13 @@ organization := "wabisabi"
 
 name := "wabisabi"
 
-version := "2.0.1"
+version := "2.0.2"
 
 scalaVersion := "2.10.0"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
-libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.10.0"
+libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.0"
 
 libraryDependencies += "org.clapper" %% "grizzled-slf4j" % "1.0.1"
 

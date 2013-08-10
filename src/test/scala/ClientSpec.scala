@@ -37,6 +37,7 @@ class ClientSpec extends Specification {
       val client = new Client("http://localhost:9200")
 
       Await.result(client.index(
+        id = Some("foo"),
         index = "foo", `type` = "foo",
         data = "{\"foo\":\"bar\"}", refresh = true
       ), Duration(1, "second")).getResponseBody must contain("\"_version\"")
@@ -125,6 +126,8 @@ class ClientSpec extends Specification {
       val client = new Client("http://localhost:9200")
 
       Await.result(client.health(), Duration(1, "second")).getResponseBody must contain("number_of_nodes")
+
+      Await.result(client.health(level = Some("indices"), timeout = Some("5")), Duration(1, "second")).getResponseBody must contain("number_of_nodes")
 
       1 must beEqualTo(1)
     }

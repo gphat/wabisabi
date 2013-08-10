@@ -1,6 +1,6 @@
 package wabisabi
 
-import com.ning.http.client.{RequestBuilder,Response}
+import com.ning.http.client.Response
 import dispatch._
 import Defaults._
 import grizzled.slf4j.Logging
@@ -20,8 +20,7 @@ class Client(esURL: String) extends Logging {
    * @param query The query to count documents from.
    */
   def count(indices: Seq[String], types: Seq[String], query: String): Future[Response] = {
-    val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_count"
-    req << query
+    val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_count" << query
     doRequest(req.GET)
   }
 
@@ -34,10 +33,10 @@ class Client(esURL: String) extends Logging {
   def createIndex(name: String, settings: Option[String] = None): Future[Response] = {
     val req = url(esURL) / name
     // Add the settings if we have any
-    settings.map({ s => req << s })
+    val sreq = settings.map({ s => req << s }).getOrElse(req)
 
     // Do something hinky to get the trailing slash on the URL
-    val trailedReq = new RequestBuilder().setUrl(req.build.getUrl + "/")
+    val trailedReq = Req(_.setUrl(sreq.toRequest.getUrl + "/"))
     doRequest(trailedReq.PUT)
   }
 
@@ -54,7 +53,7 @@ class Client(esURL: String) extends Logging {
     val req = url(esURL) / index / `type` / id
 
     // Do something hinky to get the trailing slash on the URL
-    val trailedReq = new RequestBuilder().setUrl(req.build.getUrl + "/")
+    val trailedReq = new Req(_.setUrl(req.toRequest.getUrl + "/"))
     doRequest(trailedReq.DELETE)
   }
 
@@ -67,9 +66,7 @@ class Client(esURL: String) extends Logging {
    */
   def deleteByQuery(indices: Seq[String], `types`: Seq[String], query: String): Future[Response] = {
     // XXX Need to add parameters: df, analyzer, default_operator
-    val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_query"
-
-    req << query
+    val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_query" << query
 
     doRequest(req.DELETE)
   }
@@ -95,9 +92,7 @@ class Client(esURL: String) extends Logging {
    */
   def explain(index: String, `type`: String, id: String, query: String): Future[Response] = {
     // XXX Lots of params to add
-    val req = url(esURL) / index / `type` / id / "_explain"
-
-    req << query
+    val req = url(esURL) / index / `type` / id / "_explain" << query
 
     doRequest(req.POST)
   }
@@ -137,18 +132,24 @@ class Client(esURL: String) extends Logging {
    */
   def health(
     indices: Seq[String] = Seq.empty[String], level: Option[String] = None,
-    waitForStatus: Option[String] = None, waitForRelocatingShards: Option[Int] = None,
+    waitForStatus: Option[String] = None, waitForRelocatingShards: Option[String] = None,
     waitForNodes: Option[String] = None, timeout: Option[String] = None
   ): Future[Response] = {
     val req = url(esURL) / "_cluster" / "health" / indices.mkString(",")
 
-    addParam(req, "level", level)
-    addParam(req, "wait_for_status", waitForStatus)
-    addParam(req, "wait_for_relocation_shards", waitForRelocatingShards.flatMap({ s => Some(s.toString) }))
-    addParam(req, "wait_for_nodes", waitForNodes)
-    addParam(req, "timeout", timeout)
+    val paramNames = List("level", "wait_for_status", "wait_for_relocation_shards", "wait_for_nodes", "timeout")
+    val params = List(level, waitForStatus, waitForRelocatingShards, waitForNodes, timeout)
 
-    doRequest(req.GET)
+    // Fold in all the parameters that might've come in.
+    val freq = paramNames.zip(params).foldLeft(req)(
+      (r, nameAndParam) => {
+        nameAndParam._2.map({ p =>
+          r.addQueryParameter(nameAndParam._1, p)
+        }).getOrElse(r)
+      }
+    )
+
+    doRequest(freq.GET)
   }
 
   /**
@@ -168,20 +169,14 @@ class Client(esURL: String) extends Logging {
   ): Future[Response] = {
     // XXX Need to add parameters: version, op_type, routing, parents & children,
     // timestamp, ttl, percolate, timeout, replication, consistency
-    val baseRequest = url(esURL) / index / `type`
+    val baseRequest = url(esURL) / index / `type` << data
 
-    var req = id.map({ id => baseRequest / id }).getOrElse(baseRequest)
+    val req = id.map({ id => baseRequest / id }).getOrElse(baseRequest)
 
     // Handle the refresh param
-    if(refresh) {
-      addParam(req, "refresh", Some("true"))
-    }
+    val freq = req.addQueryParameter("refresh", if(refresh) { "true" } else { "false" })
 
-    // Add the data to the request
-    req << data
-
-    id.map({ i => doRequest(req.PUT) }).getOrElse(doRequest(req.POST))
-
+    id.map({ i => doRequest(freq.PUT) }).getOrElse(doRequest(freq.POST))
   }
 
   /**
@@ -192,8 +187,7 @@ class Client(esURL: String) extends Logging {
    * @param body The mapping.
    */
   def putMapping(indices: Seq[String], `type`: String, body: String): Future[Response] = {
-    val req = url(esURL) / indices.mkString(",") / `type` / "_mapping"
-    req << body
+    val req = url(esURL) / indices.mkString(",") / `type` / "_mapping" << body
     doRequest(req.PUT)
   }
 
@@ -215,8 +209,7 @@ class Client(esURL: String) extends Logging {
    * @param query The query to execute.
    */
   def search(index: String, query: String): Future[Response] = {
-    val req = url(esURL) / index / "_search"
-    req << query
+    val req = url(esURL) / index / "_search" << query
     doRequest(req.POST)
   }
 
@@ -231,14 +224,10 @@ class Client(esURL: String) extends Logging {
   def validate(
     index: String, `type`: Option[String] = None, query: String, explain: Boolean = false
   ): Future[Response] = {
-    val req = url(esURL) / index / `type`.getOrElse("") / "_validate" / "query"
+    val req = url(esURL) / index / `type`.getOrElse("") / "_validate" / "query" << query
 
     // Handle the refresh param
-    if(explain) {
-      addParam(req, "explain", Some("true"))
-    }
-
-    req << query
+    val freq = req.addQueryParameter("explain", if(explain) { "true" } else { "false"})
 
     doRequest(req.POST)
   }
@@ -264,25 +253,12 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
-   * Optionally add a parameter to the request.
-   *
-   * @param req The RequestBuilder to modify
-   * @param name The name of the parameter
-   * @param value The value of the param. If it's None then no parameter will be added
-   */
-  private def addParam(
-    req: RequestBuilder, name: String, value: Option[String]
-  ) = value.map({ v =>
-    req.addQueryParameter(name, v)
-  })
-
-  /**
    * Perform the request with some debugging for good measure.
    *
    * @param req The request
    */
-  private def doRequest(req: RequestBuilder) = {
-    val breq = req.build
+  private def doRequest(req: Req) = {
+    val breq = req.toRequest
     debug("%s: %s".format(breq.getMethod, breq.getUrl))
     Http(req.setHeader("Content-type", "application/json"))
   }
