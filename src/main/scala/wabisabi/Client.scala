@@ -25,6 +25,23 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Create aliases.
+   *
+   * @param actions A String of JSON containing the actions to be performed. This string will be placed within the actions array passed
+   *
+   * As defined in the [[http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases/ Elasticsearch Admin Indices API]] this
+   * method takes a string representing a list of operations to be performed. Remember to 
+   * {{{
+   * val actions = """{ "add": { "index": "index1", "alias": "alias1" } }, { "add": { "index": "index2", "alias": "alias2" } }"""
+   * }}}
+   */
+  def createAlias(actions: String): Future[Response] = {
+    val req = url(esURL) / "_aliases" << """{ "actions": [ """ + actions + """ ] }"""
+
+    doRequest(req.POST)
+  }
+
+  /**
    * Create an index, optionally using the supplied settings.
    *
    * @param name The name of the index.
@@ -55,6 +72,18 @@ class Client(esURL: String) extends Logging {
     // Do something hinky to get the trailing slash on the URL
     val trailedReq = new Req(_.setUrl(req.toRequest.getUrl + "/"))
     doRequest(trailedReq.DELETE)
+  }
+
+  /**
+   * Delete an index alias.
+   *
+   * @param index The name of the index.
+   * @param alias The name of the alias.
+   */
+  def deleteAlias(index: String, alias: String): Future[Response] = {
+    val req = url(esURL) / index / "_alias" / alias
+
+    doRequest(req.DELETE)
   }
 
   /**
@@ -107,6 +136,19 @@ class Client(esURL: String) extends Logging {
   def get(index: String, `type`: String, id: String): Future[Response] = {
     val req = url(esURL) / index / `type` / id
     doRequest(req.GET)
+  }
+
+  /**
+   * Get aliases for indices.
+   *
+   * @param index Optional name of an index. If no index is supplied, then the query will check all indices.
+   * @param query The name of alias to return in the response. Like the index option, this option supports wildcards and the option the specify multiple alias names separated by a comma.
+   */
+  def getAliases(index: Option[String], query: String = "*"): Future[Response] = {
+    val req = url(esURL)
+    val freq = index.map(i => req / i).getOrElse(req) / "_alias" / query
+
+    doRequest(freq.GET)
   }
 
   /**
@@ -259,7 +301,7 @@ class Client(esURL: String) extends Logging {
    */
   private def doRequest(req: Req) = {
     val breq = req.toRequest
-    debug("%s: %s".format(breq.getMethod, breq.getUrl))
+    error("%s: %s".format(breq.getMethod, breq.getUrl))
     Http(req.setHeader("Content-type", "application/json"))
   }
 }

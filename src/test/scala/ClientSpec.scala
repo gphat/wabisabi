@@ -20,13 +20,28 @@ class ClientSpec extends Specification {
       1 must beEqualTo(1)
     }
 
-
     "create and delete indexes" in {
       val client = new Client("http://localhost:9200")
 
       Await.result(client.createIndex(name = "foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
       Await.result(client.verifyIndex("foo"), Duration(1, "second"))
+
+      Await.result(client.deleteIndex("foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
+
+      1 must beEqualTo(1)
+    }
+
+    "create and delete aliases" in {
+      val client = new Client("http://localhost:9200")
+
+      Await.result(client.createIndex(name = "foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
+
+      Await.result(client.createAlias(actions = """{ "add": { "index": "foo", "alias": "foo-write" }}"""), Duration(1, "second")).getResponseBody must contain("acknowledged")
+
+      Await.result(client.getAliases(index = Some("foo")), Duration(1, "second")).getResponseBody must contain("foo-write")
+
+      Await.result(client.deleteAlias(index = "foo", alias = "foo-write"), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
       Await.result(client.deleteIndex("foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
