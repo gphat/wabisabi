@@ -27,14 +27,22 @@
         </ul>
       </header>
       <section>
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+        <h3>About</h3>
+<p>Wabisabi is a Scala <a href="http://www.elasticsearch.org/">Elasticsearch</a> client that uses the REST API and has no dependency on ElasticSearch itself. It is extremely minimal, eschewing any sort of parsing, formatting or other such complication.</p>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<h3>Why Doesn't This Library Do JSON</h3>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<p>Because I want that to be your choice, not mine.</p>
+
+<h3>Use It</h3>
+<p>To use, add the following to your <pre>build.sbt</pre> file.
+
+<pre><code>
+// Add the Dep
+libraryDependencies += "wabisabi" %% "wabisabi" % "2.0.2"
+
+// And a the resolver
+resolvers += "gphat" at "https://raw.github.com/gphat/mvn-repo/master/releases/",
 </code></pre>
 
 <p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
