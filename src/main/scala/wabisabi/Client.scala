@@ -301,7 +301,7 @@ class Client(esURL: String) extends Logging {
    */
   private def doRequest(req: Req) = {
     val breq = req.toRequest
-    error("%s: %s".format(breq.getMethod, breq.getUrl))
+    debug("%s: %s".format(breq.getMethod, breq.getUrl))
     Http(req.setHeader("Content-type", "application/json"))
   }
 }
