@@ -6,6 +6,7 @@ import Defaults._
 import grizzled.slf4j.Logging
 import java.net.URL
 import scala.concurrent.Promise
+import java.nio.charset.StandardCharsets
 
 class Client(esURL: String) extends Logging {
 
@@ -211,7 +212,7 @@ class Client(esURL: String) extends Logging {
   ): Future[Response] = {
     // XXX Need to add parameters: version, op_type, routing, parents & children,
     // timestamp, ttl, percolate, timeout, replication, consistency
-    val baseRequest = url(esURL) / index / `type` << data
+    val baseRequest = (url(esURL) / index / `type`).setBody(data.getBytes(StandardCharsets.UTF_8))
 
     val req = id.map({ id => baseRequest / id }).getOrElse(baseRequest)
 
