@@ -306,3 +306,17 @@ class Client(esURL: String) extends Logging {
     Http(req.setHeader("Content-type", "application/json; charset=utf-8"))
   }
 }
+
+object Client {
+  /**
+   * Disconnects any remaining connections. Both idle and active. If you are accessing
+   * Elasticsearch through a proxy that keeps connections alive this is useful.
+   *
+   * If your application uses the dispatch library for other purposes, those connections
+   * will also terminate.
+   */
+  def shutdown() {
+    Http.shutdown()
+  }
+
+}
