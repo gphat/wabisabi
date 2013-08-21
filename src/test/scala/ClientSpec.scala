@@ -54,10 +54,10 @@ class ClientSpec extends Specification {
       Await.result(client.index(
         id = Some("foo"),
         index = "foo", `type` = "foo",
-        data = "{\"foo\":\"bar\"}", refresh = true
+        data = "{\"foo\":\"bar₡\"}", refresh = true
       ), Duration(1, "second")).getResponseBody must contain("\"_version\"")
 
-      Await.result(client.get("foo", "foo", "foo"), Duration(1, "second")).getResponseBody must contain("\"foo\"")
+      Await.result(client.get("foo", "foo", "foo"), Duration(1, "second")).getResponseBody must contain("\"bar₡\"")
 
       Await.result(client.delete("foo", "foo", "foo"), Duration(1, "second")).getResponseBody must contain("\"found\"")
 

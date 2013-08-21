@@ -6,6 +6,7 @@ import Defaults._
 import grizzled.slf4j.Logging
 import java.net.URL
 import scala.concurrent.Promise
+import java.nio.charset.StandardCharsets
 
 class Client(esURL: String) extends Logging {
 
@@ -20,7 +21,7 @@ class Client(esURL: String) extends Logging {
    * @param query The query to count documents from.
    */
   def count(indices: Seq[String], types: Seq[String], query: String): Future[Response] = {
-    val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_count" << query
+    val req = (url(esURL) / indices.mkString(",") / types.mkString(",") / "_count").setBody(query.getBytes(StandardCharsets.UTF_8))
     doRequest(req.GET)
   }
 
@@ -36,7 +37,7 @@ class Client(esURL: String) extends Logging {
    * }}}
    */
   def createAlias(actions: String): Future[Response] = {
-    val req = url(esURL) / "_aliases" << """{ "actions": [ """ + actions + """ ] }"""
+    val req = (url(esURL) / "_aliases").setBody(("""{ "actions": [ """ + actions + """ ] }""").getBytes(StandardCharsets.UTF_8))
 
     doRequest(req.POST)
   }
@@ -50,7 +51,7 @@ class Client(esURL: String) extends Logging {
   def createIndex(name: String, settings: Option[String] = None): Future[Response] = {
     val req = url(esURL) / name
     // Add the settings if we have any
-    val sreq = settings.map({ s => req << s }).getOrElse(req)
+    val sreq = settings.map({ s => req.setBody(s.getBytes(StandardCharsets.UTF_8)) }).getOrElse(req)
 
     // Do something hinky to get the trailing slash on the URL
     val trailedReq = Req(_.setUrl(sreq.toRequest.getUrl + "/"))
@@ -95,7 +96,7 @@ class Client(esURL: String) extends Logging {
    */
   def deleteByQuery(indices: Seq[String], `types`: Seq[String], query: String): Future[Response] = {
     // XXX Need to add parameters: df, analyzer, default_operator
-    val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_query" << query
+    val req = (url(esURL) / indices.mkString(",") / types.mkString(",") / "_query").setBody(query.getBytes(StandardCharsets.UTF_8))
 
     doRequest(req.DELETE)
   }
@@ -121,7 +122,7 @@ class Client(esURL: String) extends Logging {
    */
   def explain(index: String, `type`: String, id: String, query: String): Future[Response] = {
     // XXX Lots of params to add
-    val req = url(esURL) / index / `type` / id / "_explain" << query
+    val req = (url(esURL) / index / `type` / id / "_explain").setBody(query.getBytes(StandardCharsets.UTF_8))
 
     doRequest(req.POST)
   }
@@ -211,7 +212,7 @@ class Client(esURL: String) extends Logging {
   ): Future[Response] = {
     // XXX Need to add parameters: version, op_type, routing, parents & children,
     // timestamp, ttl, percolate, timeout, replication, consistency
-    val baseRequest = url(esURL) / index / `type` << data
+    val baseRequest = (url(esURL) / index / `type`).setBody(data.getBytes(StandardCharsets.UTF_8))
 
     val req = id.map({ id => baseRequest / id }).getOrElse(baseRequest)
 
@@ -229,7 +230,7 @@ class Client(esURL: String) extends Logging {
    * @param body The mapping.
    */
   def putMapping(indices: Seq[String], `type`: String, body: String): Future[Response] = {
-    val req = url(esURL) / indices.mkString(",") / `type` / "_mapping" << body
+    val req = (url(esURL) / indices.mkString(",") / `type` / "_mapping").setBody(body.getBytes(StandardCharsets.UTF_8))
     doRequest(req.PUT)
   }
 
@@ -251,7 +252,7 @@ class Client(esURL: String) extends Logging {
    * @param query The query to execute.
    */
   def search(index: String, query: String): Future[Response] = {
-    val req = url(esURL) / index / "_search" << query
+    val req = (url(esURL) / index / "_search").setBody(query.getBytes(StandardCharsets.UTF_8))
     doRequest(req.POST)
   }
 
@@ -266,7 +267,7 @@ class Client(esURL: String) extends Logging {
   def validate(
     index: String, `type`: Option[String] = None, query: String, explain: Boolean = false
   ): Future[Response] = {
-    val req = url(esURL) / index / `type`.getOrElse("") / "_validate" / "query" << query
+    val req = (url(esURL) / index / `type`.getOrElse("") / "_validate" / "query").setBody(query.getBytes(StandardCharsets.UTF_8))
 
     // Handle the refresh param
     val freq = req.addQueryParameter("explain", if(explain) { "true" } else { "false"})
@@ -301,7 +302,7 @@ class Client(esURL: String) extends Logging {
    */
   private def doRequest(req: Req) = {
     val breq = req.toRequest
-    debug("%s: %s".format(breq.getMethod, breq.getUrl))
-    Http(req.setHeader("Content-type", "application/json"))
+    error("%s: %s".format(breq.getMethod, breq.getUrl))
+    Http(req.setHeader("Content-type", "application/json; charset=utf-8"))
   }
 }
