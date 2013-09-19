@@ -196,6 +196,29 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Query ElasticSearch Stats. Parameters to enable non-default stats as desired.
+   *
+   * @param indices Optional list of index names. Defaults to empty.
+   * @param clear Clears all the flags (first).
+   * @param refresh refresh stats.
+   * @param flush flush stats.
+   * @param merge merge stats.
+   * @param warmer Warmer statistics.
+   */
+  def stats(indices: Seq[String] = Seq(), clear: Boolean = false, refresh: Boolean = false, flush: Boolean = false, merge: Boolean = false, warmer: Boolean = false): Future[Response] = {
+    val req = indices match {
+      case Nil => url(esURL) / "_stats"
+      case _ => url(esURL) / indices.mkString(",") / "_stats"
+    }
+
+    val paramNames = List("clear", "refresh", "flush", "merge", "warmer")
+    val params = List(clear, refresh, flush, merge, warmer)
+    val reqWithParams = paramNames.zip(params).filter(_._2).foldLeft(req)((r, nameAndParam) => r.addQueryParameter(nameAndParam._1, nameAndParam._2.toString))
+
+    doRequest(reqWithParams.GET)
+  }
+
+  /**
    * Index a document.
    *
    * Adds or updates a JSON documented of the specified type in the specified
