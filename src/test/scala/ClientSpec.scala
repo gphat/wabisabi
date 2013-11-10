@@ -173,6 +173,24 @@ class ClientSpec extends Specification {
       barRes must contain("indices")
       barRes must contain("bar")
       barRes must not contain("foo")
+
+      Await.result(client.deleteIndex("foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
+      Await.result(client.deleteIndex("bar"), Duration(1, "second")).getResponseBody must contain("acknowledged")
+    }
+
+    "handle bulk requests" in {
+      val client = new Client("http://localhost:9200")
+
+      val res = Await.result(client.bulk(data = """{ "index" : { "_index" : "test", "_type" : "type1", "_id" : "1" } }
+{ "field1" : "value1" }
+{ "delete" : { "_index" : "test", "_type" : "type1", "_id" : "2" } }
+{ "create" : { "_index" : "test", "_type" : "type1", "_id" : "3" } }
+{ "field1" : "value3" }
+{ "update" : {"_id" : "1", "_type" : "type1", "_index" : "index1"} }
+{ "doc" : {"field2" : "value2"} }"""), Duration(1, "second")).getResponseBody
+      res must contain("\"ok\":true")
+
+      Await.result(client.deleteIndex("test"), Duration(1, "second")).getResponseBody must contain("acknowledged")
     }
   }
 }
