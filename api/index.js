@@ -1,1 +1,1 @@
-Index.PACKAGES = {"wabisabi" : [{"class" : "wabisabi\/Client.html", "name" : "wabisabi.Client"}]};
+Index.PACKAGES = {"wabisabi" : [{"object" : "wabisabi\/Client$.html", "class" : "wabisabi\/Client.html", "name" : "wabisabi.Client"}]};
