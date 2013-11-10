@@ -176,7 +176,7 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
-   * Query ElastichSearch for it's health.
+   * Query ElasticSearch for it's health.
    *
    * @param indices Optional list of index names. Defaults to empty.
    * @param level Can be one of cluster, indices or shards. Controls the details level of the health information returned.
