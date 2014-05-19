@@ -22,6 +22,8 @@ scala 2.10.
 
 ## Notes
 
+Wabisabi was tested against ElasticSearch >= 1.1.0.
+
 Version 2.0.0 switched to returning `Future[Response]` rather than `Future[String]`
 so that errors can be handled.
 
