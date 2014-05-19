@@ -21,18 +21,7 @@ class Client(esURL: String) extends Logging {
    * @param data The operations to perform as described by the [[http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-bulk.html ElasticSearch Bulk API]].
    */
   def bulk(index: Option[String] = None, `type`: Option[String] = None, data: String): Future[Response] = {
-    bulk(index, `type`, data.getBytes(StandardCharsets.UTF_8))
-  }
-
-  /**
-   * Use the bulk API to perform many index/delete operations in a single call.
-   *
-   * @param index The optional index name.
-   * @param type The optional type.
-   * @param data The operations to perform as described by the [[http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-bulk.html ElasticSearch Bulk API]].
-   */
-  def bulk(index: Option[String] = None, `type`: Option[String] = None, data: Array[Byte]): Future[Response] = {
-    val freq = (url(esURL) / index.getOrElse("") / `type`.getOrElse("") / "_bulk").setBody(data))
+    val freq = (url(esURL) / index.getOrElse("") / `type`.getOrElse("") / "_bulk").setBody(data.getBytes(StandardCharsets.UTF_8))
     doRequest(freq.POST)
   }
 
@@ -54,7 +43,7 @@ class Client(esURL: String) extends Logging {
    * @param actions A String of JSON containing the actions to be performed. This string will be placed within the actions array passed
    *
    * As defined in the [[http://www.elasticsearch.org/guide/reference/api/admin-indices-aliases/ ElasticSearch Admin Indices API]] this
-   * method takes a string representing a list of operations to be performed. Remember to 
+   * method takes a string representing a list of operations to be performed. Remember to
    * {{{
    * val actions = """{ "add": { "index": "index1", "alias": "alias1" } }, { "add": { "index": "index2", "alias": "alias2" } }"""
    * }}}
