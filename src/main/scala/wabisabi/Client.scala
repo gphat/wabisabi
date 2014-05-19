@@ -171,7 +171,7 @@ class Client(esURL: String) extends Logging {
    * @param types A sequence of types for which mappings will be fetched.
    */
   def getMapping(indices: Seq[String], types: Seq[String]): Future[Response] = {
-    val req = url(esURL) / indices.mkString(",") / types.mkString(",") / "_mapping"
+    val req = url(esURL) / indices.mkString(",") / "_mapping" / types.mkString(",")
     doRequest(req.GET)
   }
 

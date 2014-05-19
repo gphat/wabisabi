@@ -93,7 +93,7 @@ class ClientSpec extends Specification {
 
       Await.result(client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }"), Duration(1, "second")).getResponseBody must contain("\"count\":1")
 
-      Await.result(client.deleteByQuery(Seq("foo"), Seq.empty[String], "{ \"match_all\": {} }"), Duration(1, "second")).getResponseBody must contain("\"successful\"")
+      Await.result(client.deleteByQuery(Seq("foo"), Seq.empty[String], "{\"query\": { \"match_all\": {} }"), Duration(1, "second")).getResponseBody must contain("\"successful\"")
 
       Await.result(client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }"), Duration(1, "second")).getResponseBody must contain("\"count\":0")
 
@@ -107,7 +107,7 @@ class ClientSpec extends Specification {
 
       Await.result(client.createIndex(name = "foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
-      Await.result(client.putMapping(Seq("foo"), "foo", "{\"tweet\": { \"properties\": { \"message\": { \"type\": \"string\", \"store\": \"yes\" } } } }"), Duration(1, "second")).getResponseBody must contain("acknowledged")
+      Await.result(client.putMapping(Seq("foo"), "foo", "{\"tweet\": { \"properties\": { \"message\": { \"type\": \"string\", \"store\": true } } } }"), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
       Await.result(client.verifyType("foo", "foo"), Duration(1, "second"))
 
@@ -154,21 +154,17 @@ class ClientSpec extends Specification {
       Await.result(client.createIndex(name = "bar"), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
       val res = Await.result(client.stats(), Duration(1, "second")).getResponseBody
-      res must contain("\"ok\":true")
+      res must contain("primaries")
       res must contain("_all")
       res must contain("indices")
-      res must contain("foo")
-      res must contain("bar")
 
       val fooRes = Await.result(client.stats(indices = Seq("foo")), Duration(1, "second")).getResponseBody
-      fooRes must contain("\"ok\":true")
       fooRes must contain("_all")
       fooRes must contain("indices")
       fooRes must contain("foo")
       fooRes must not contain("bar")
 
       val barRes = Await.result(client.stats(indices = Seq("bar")), Duration(1, "second")).getResponseBody
-      barRes must contain("\"ok\":true")
       barRes must contain("_all")
       barRes must contain("indices")
       barRes must contain("bar")
@@ -188,7 +184,7 @@ class ClientSpec extends Specification {
 { "field1" : "value3" }
 { "update" : {"_id" : "1", "_type" : "type1", "_index" : "index1"} }
 { "doc" : {"field2" : "value2"} }"""), Duration(1, "second")).getResponseBody
-      res must contain("\"ok\":true")
+      res must contain("\"status\":201")
 
       Await.result(client.deleteIndex("test"), Duration(1, "second")).getResponseBody must contain("acknowledged")
     }
