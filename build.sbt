@@ -2,9 +2,9 @@ organization := "wabisabi"
 
 name := "wabisabi"
 
-version := "2.0.9"
+version := "2.0.10"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.1"
 
 crossScalaVersions := Seq("2.10.4")
 
@@ -12,7 +12,7 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
 libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.0"
 
-libraryDependencies += "org.clapper" %% "grizzled-slf4j" % "1.0.1"
+libraryDependencies += "org.clapper" %% "grizzled-slf4j" % "1.0.2"
 
 libraryDependencies += "org.specs2" %% "specs2" % "2.3.11" % "test"
 

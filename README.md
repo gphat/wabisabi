@@ -18,7 +18,7 @@ didn't go awry.
 
 Depends on [dispatch](http://dispatch.databinder.net/Dispatch.html) and
 [grizzled-slf4j](http://software.clapper.org/grizzled-slf4j/). It's compiled for
-scala 2.10.
+scala 2.11.
 
 ## Notes
 
@@ -34,7 +34,7 @@ bits as needed or as patches arrive.
 
 ```
 // Add the Dep
-libraryDependencies += "wabisabi" %% "wabisabi" % "2.0.9"
+libraryDependencies += "wabisabi" %% "wabisabi" % "2.0.10"
 
 // And a the resolver
 resolvers += "gphat" at "https://raw.github.com/gphat/mvn-repo/master/releases/",
