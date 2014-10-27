@@ -8,6 +8,9 @@ import java.net.URL
 import scala.concurrent.Promise
 import java.nio.charset.StandardCharsets
 
+import com.netaporter.uri.Uri
+import com.netaporter.uri.dsl._
+
 class Client(esURL: String) extends Logging {
 
   // XXX multiget, update, multisearch, percolate, more like this,
@@ -340,6 +343,28 @@ class Client(esURL: String) extends Logging {
     debug("%s: %s".format(breq.getMethod, breq.getUrl))
     Http(req.setHeader("Content-type", "application/json; charset=utf-8"))
   }
+
+
+  private def url(es_url: String) = {
+
+    val uri: Uri = es_url
+
+    val req = if (uri.user.isDefined && uri.password.isDefined) {
+      dispatch.url(uri.protocol.get+uri.host.get+uri.port.get).as_!(uri.user.get, uri.password.get)
+    }
+
+    else {
+      dispatch.url(uri.protocol.get+uri.host.get+uri.port.get)
+
+    }
+
+    uri.protocol match {
+      case "http" => req
+      case "https" => req.secure
+    }
+
+
+  }
 }
 
 object Client {
@@ -353,5 +378,9 @@ object Client {
   def shutdown() {
     Http.shutdown()
   }
+
+
+
+
 
 }
