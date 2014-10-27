@@ -358,9 +358,10 @@ class Client(esURL: String) extends Logging {
 
     }
 
-    uri.protocol match {
+    uri.protocol.get match {
       case "http" => req
       case "https" => req.secure
+      case _ => logger.error("Unknown protocol: %s".format(uri.protocol.get))
     }
 
 
