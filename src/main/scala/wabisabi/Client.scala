@@ -350,18 +350,22 @@ class Client(esURL: String) extends Logging {
     val uri: Uri = es_url
 
     val req = if (uri.user.isDefined && uri.password.isDefined) {
-      dispatch.url(uri.protocol.get+uri.host.get+uri.port.get).as_!(uri.user.get, uri.password.get)
+
+      dispatch.url(uri.protocol.get+"://"+uri.host.get+":"+uri.port.get).as_!(uri.user.get, uri.password.get)
     }
 
     else {
-      dispatch.url(uri.protocol.get+uri.host.get+uri.port.get)
+      dispatch.url(uri.protocol.get+"://"+uri.host.get+":"+uri.port.get)
 
     }
 
     uri.protocol.get match {
       case "http" => req
       case "https" => req.secure
-      case _ => logger.error("Unknown protocol: %s".format(uri.protocol.get))
+      case _ => {
+        logger.error("Unknown protocol: %s".format(uri.protocol.get))
+        dispatch.url("")
+      }
     }
 
 
