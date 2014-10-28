@@ -16,8 +16,6 @@ class ClientSpec extends Specification {
 
       val res = Await.result(client.verifyIndex("foobarbaz"), Duration(1, "second"))
       res.getStatusCode must beEqualTo(404)
-
-      1 must beEqualTo(1)
     }
 
     "create and delete indexes" in {
@@ -28,8 +26,6 @@ class ClientSpec extends Specification {
       Await.result(client.verifyIndex("foo"), Duration(1, "second"))
 
       Await.result(client.deleteIndex("foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
-
-      1 must beEqualTo(1)
     }
 
     "create and delete aliases" in {
@@ -44,8 +40,6 @@ class ClientSpec extends Specification {
       Await.result(client.deleteAlias(index = "foo", alias = "foo-write"), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
       Await.result(client.deleteIndex("foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
-
-      1 must beEqualTo(1)
     }
 
     "index and fetch a document" in {
@@ -60,8 +54,6 @@ class ClientSpec extends Specification {
       Await.result(client.get("foo", "foo", "foo"), Duration(1, "second")).getResponseBody must contain("\"bar₡\"")
 
       Await.result(client.delete("foo", "foo", "foo"), Duration(1, "second")).getResponseBody must contain("\"found\"")
-
-      1 must beEqualTo(1)
     }
 
     "index and search for a document" in {
@@ -79,8 +71,6 @@ class ClientSpec extends Specification {
       Await.result(client.delete("foo", "foo", "foo2"), Duration(1, "second")).getResponseBody must contain("\"found\"")
 
       Await.result(client.deleteIndex("foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
-
-      1 must beEqualTo(1)
     }
 
     "delete a document by query" in {
@@ -93,13 +83,11 @@ class ClientSpec extends Specification {
 
       Await.result(client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }"), Duration(1, "second")).getResponseBody must contain("\"count\":1")
 
-      Await.result(client.deleteByQuery(Seq("foo"), Seq.empty[String], "{\"query\": { \"match_all\": {} }"), Duration(1, "second")).getResponseBody must contain("\"successful\"")
+      Await.result(client.deleteByQuery(Seq("foo"), Seq.empty[String], """{ "query": { "match_all" : { } } }"""), Duration(1, "second")).getResponseBody must contain("\"successful\"")
 
       Await.result(client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }"), Duration(1, "second")).getResponseBody must contain("\"count\":0")
 
       Await.result(client.deleteIndex("foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
-
-      1 must beEqualTo(1)
     }
 
     "properly manipulate mappings" in {
@@ -107,15 +95,13 @@ class ClientSpec extends Specification {
 
       Await.result(client.createIndex(name = "foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
-      Await.result(client.putMapping(Seq("foo"), "foo", "{\"tweet\": { \"properties\": { \"message\": { \"type\": \"string\", \"store\": true } } } }"), Duration(1, "second")).getResponseBody must contain("acknowledged")
+      Await.result(client.putMapping(Seq("foo"), "foo", """{"foo": { "properties": { "message": { "type": "string", "store": true } } } }"""), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
       Await.result(client.verifyType("foo", "foo"), Duration(1, "second"))
 
       Await.result(client.getMapping(Seq("foo"), Seq("foo")), Duration(1, "second")).getResponseBody must contain("store")
 
       Await.result(client.deleteIndex("foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
-
-      1 must beEqualTo(1)
     }
 
     "validate and explain queries" in {
@@ -133,8 +119,6 @@ class ClientSpec extends Specification {
       Await.result(client.explain(index = "foo", `type` = "foo", id = "foo2", query = "{\"query\": { \"term\": { \"foo\":\"bar\"} } }"), Duration(1, "second")).getResponseBody must contain("explanation")
 
       Await.result(client.deleteIndex("foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
-
-      1 must beEqualTo(1)
     }
 
     "handle health checking" in {
@@ -143,8 +127,6 @@ class ClientSpec extends Specification {
       Await.result(client.health(), Duration(1, "second")).getResponseBody must contain("number_of_nodes")
 
       Await.result(client.health(level = Some("indices"), timeout = Some("5")), Duration(1, "second")).getResponseBody must contain("number_of_nodes")
-
-      1 must beEqualTo(1)
     }
 
     "handle stats checking" in {
