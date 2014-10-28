@@ -18,4 +18,8 @@ libraryDependencies += "org.specs2" %% "specs2" % "2.3.11" % "test"
 
 libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.7.5" % "test"
 
+libraryDependencies += "com.netaporter" %% "scala-uri" % "0.4.3"
+
 publishTo := Some(Resolver.file("file",  new File( "/Users/gphat/src/mvn-repo/releases" )) )
+
+
