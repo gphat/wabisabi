@@ -383,9 +383,4 @@ object Client {
   def shutdown() {
     Http.shutdown()
   }
-
-
-
-
-
 }
