@@ -8,7 +8,11 @@ import java.net.URL
 import scala.concurrent.Promise
 import java.nio.charset.StandardCharsets
 
-class Client(esURL: String) extends Logging {
+class Client(esURL: String, username: Option[String] = None, password: Option[String] = None) extends Logging {
+
+  if(username.isDefined && password.isEmpty) {
+    throw new IllegalArgumentException("Please provide a username and password together!")
+  }
 
   // XXX multiget, update, multisearch, percolate, more like this,
   //
@@ -339,6 +343,14 @@ class Client(esURL: String) extends Logging {
     val breq = req.toRequest
     debug("%s: %s".format(breq.getMethod, breq.getUrl))
     Http(req.setHeader("Content-type", "application/json; charset=utf-8"))
+  }
+
+  private def url(es_url: String) = {
+    username.map({ user =>
+      dispatch.url(es_url).as_!(user, password.get)
+    }).getOrElse({
+      dispatch.url(es_url)
+    })
   }
 }
 
