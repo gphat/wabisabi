@@ -81,7 +81,7 @@ class ClientSpec extends Specification {
         data = "{\"foo\":\"bar\"}", refresh = true
       ), Duration(1, "second")).getResponseBody must contain("\"_version\"")
 
-      Await.result(client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }"), Duration(1, "second")).getResponseBody must contain("\"count\":1")
+      Await.result(client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} } }"), Duration(1, "second")).getResponseBody must contain("\"count\":1")
 
       Await.result(client.deleteByQuery(Seq("foo"), Seq.empty[String], """{ "query": { "match_all" : { } } }"""), Duration(1, "second")).getResponseBody must contain("\"successful\"")
 
