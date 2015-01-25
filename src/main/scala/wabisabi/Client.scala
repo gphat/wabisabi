@@ -287,10 +287,11 @@ class Client(esURL: String) extends Logging {
    * Search for documents.
    *
    * @param index The index to search
+   * @param type The optional type of document to search
    * @param query The query to execute.
    */
-  def search(index: String, query: String): Future[Response] = {
-    val req = (url(esURL) / index / "_search").setBody(query.getBytes(StandardCharsets.UTF_8))
+  def search(index: String, query: String, `type`: Option[String] = None): Future[Response] = {
+    val req = (url(esURL) / index / `type`.getOrElse("") / "_search").setBody(query.getBytes(StandardCharsets.UTF_8))
     doRequest(req.POST)
   }
 

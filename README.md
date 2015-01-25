@@ -70,7 +70,10 @@ client.index(
 client.get("foo", "foo", "foo").getResponseBody
 
 // Search for all documents.
-client.search("foo", "{\"query\": { \"match_all\": {} }").getResponseBody
+client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }").getResponseBody
+
+// Search for all documents of a specific type!
+client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }", `type`= "tweet").getResponseBody
 
 // Validate a query.
 client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }").getStatusCode // Should be 200
