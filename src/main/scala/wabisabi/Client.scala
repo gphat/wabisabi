@@ -155,6 +155,18 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Get multiple documents by ID.
+   *
+   * @param index The optional name of the index.
+   * @param type The optional type of the document.
+   * @param query The query to execute.
+   */
+  def mget(index: Option[String], `type`: Option[String], query: String): Future[Response] = {
+    val req = (url(esURL) / index.getOrElse("") / `type`.getOrElse("") / "_mget").setBody(query.getBytes(StandardCharsets.UTF_8))
+    doRequest(req.POST)
+  }
+
+  /**
    * Get aliases for indices.
    *
    * @param index Optional name of an index. If no index is supplied, then the query will check all indices.

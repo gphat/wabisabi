@@ -1,11 +1,12 @@
 package test
 
+import org.specs2.matcher.JsonMatchers
 import org.specs2.mutable._
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import wabisabi._
 
-class ClientSpec extends Specification {
+class ClientSpec extends Specification with JsonMatchers {
 
   sequential
 
@@ -54,6 +55,93 @@ class ClientSpec extends Specification {
       Await.result(client.get("foo", "foo", "foo"), Duration(1, "second")).getResponseBody must contain("\"bar₡\"")
 
       Await.result(client.delete("foo", "foo", "foo"), Duration(1, "second")).getResponseBody must contain("\"found\"")
+    }
+
+    "get multiple documents" in {
+
+      def index(client: Client)(index: String, `type`: String, id: String) = {
+        Await.result(client.index(
+          id = Some(id),
+          index = index, `type` = `type`,
+          data = s"""{"id":"$id"}""", refresh = true
+        ), Duration(1, "second")).getResponseBody must contain("\"_version\"")
+      }
+
+      def delete(client: Client)(index: String, `type`: String, id: String) = {
+        Await.result(client.delete(index, `type`, id), Duration(1, "second")).getResponseBody must contain("\"found\"")
+      }
+
+      "with index and type" in {
+        val client = new Client("http://localhost:9200")
+
+        index(client)(index = "foo", `type` = "bar", id = "1")
+        index(client)(index = "foo", `type` = "bar", id = "2")
+
+        Await.result(client.mget(index = Some("foo"), `type` = Some("bar"), query =
+          """
+            |{
+            | "ids" : ["1", "2"]
+            |}
+          """.stripMargin), Duration(1, "second")).getResponseBody must / ("docs") /# 0 / ("found" -> "true") and
+                                                                        / ("docs") /# 1 / ("found" -> "true")
+
+        delete(client)("foo", "bar", "1")
+        delete(client)("foo", "bar", "2")
+      }
+
+      "with index" in {
+        val client = new Client("http://localhost:9200")
+
+        index(client)(index = "foo", `type` = "bar1", id = "1")
+        index(client)(index = "foo", `type` = "bar2", id = "2")
+
+        Await.result(client.mget(index = Some("foo"), `type` = None, query =
+          """{
+            |  "docs" : [
+            |    {
+            |      "_type" : "bar1",
+            |      "_id" : "1"
+            |    },
+            |    {
+            |      "_type" : "bar2",
+            |      "_id" : "2"
+            |    }
+            |  ]
+            |}
+          """.stripMargin), Duration(1, "second")).getResponseBody must / ("docs") /# 0 / ("found" -> "true") and
+                                                                        / ("docs") /# 1 / ("found" -> "true")
+
+        delete(client)("foo", "bar1", "1")
+        delete(client)("foo", "bar2", "2")
+      }
+
+      "without index and type" in {
+        val client = new Client("http://localhost:9200")
+
+        index(client)(index = "foo1", `type` = "bar1", id = "1")
+        index(client)(index = "foo2", `type` = "bar2", id = "2")
+
+        Await.result(client.mget(index = None, `type` = None, query =
+          """{
+            |  "docs" : [
+            |    {
+            |      "_index" : "foo1",
+            |      "_type" : "bar1",
+            |      "_id" : "1"
+            |    },
+            |    {
+            |      "_index" : "foo2",
+            |      "_type" : "bar2",
+            |      "_id" : "2"
+            |    }
+            |  ]
+            |}
+          """.stripMargin), Duration(1, "second")).getResponseBody must / ("docs") /# 0 / ("found" -> "true") and
+                                                                        / ("docs") /# 1 / ("found" -> "true")
+
+        delete(client)("foo1", "bar1", "1")
+        delete(client)("foo2", "bar2", "2")
+      }
     }
 
     "index and search for a document" in {
