@@ -81,6 +81,9 @@ client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }").getS
 // Explain a query.
 client.explain(index = "foo", `type` = "foo", id = "foo2", query = "{\"query\": { \"term\": { \"foo\":\"bar\"} } }")
 
+// Suggestion possible term/phrase completions.
+client.suggest(index = "foo", query = "{\"suggest\": {\"text\": \"bar\", \"completion\": {\"field\": \"foo\"} } }")
+
 // Delete the document.
 client.delete("foo", "foo", "foo")
 

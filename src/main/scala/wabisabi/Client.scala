@@ -308,6 +308,17 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Suggest completions based on analyzed documents.
+   *
+   * @param index The index to search
+   * @param query The query to execute.
+   */
+  def suggest(index: String, query: String): Future[Response] = {
+    val req = (url(esURL) / index / "_suggest").setBody(query.getBytes(StandardCharsets.UTF_8))
+    doRequest(req.POST)
+  }
+
+  /**
    * Validate a query.
    *
    * @param index The name of the index.

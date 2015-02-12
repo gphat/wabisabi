@@ -192,6 +192,52 @@ class ClientSpec extends Specification with JsonMatchers {
       Await.result(client.deleteIndex("foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
     }
 
+    "suggest completions" in {
+      val client = new Client("http://localhost:9200")
+
+      Await.result(client.createIndex(name = "music"), Duration(1, "second")).getResponseBody must contain("acknowledged")
+
+      Await.result(client.putMapping(Seq("music"), "song",
+        """{
+          |  "song" : {
+          |        "properties" : {
+          |            "name" : { "type" : "string" },
+          |            "suggest" : { "type" : "completion",
+          |                          "index_analyzer" : "simple",
+          |                          "search_analyzer" : "simple",
+          |                          "payloads" : true
+          |            }
+          |        }
+          |    }
+          |}
+        """.stripMargin), Duration(1, "second"))
+
+      Await.result(client.index("music", "song", Some("1"),
+        """{
+          |    "name" : "Nevermind",
+          |    "suggest" : {
+          |        "input": [ "Nevermind", "Nirvana" ],
+          |        "output": "Nirvana - Nevermind",
+          |        "payload" : { "artistId" : 2321 },
+          |        "weight" : 34
+          |    }
+          |}
+        """.stripMargin, refresh = true), Duration(1, "second")).getResponseBody must contain("\"created\":true")
+
+      Await.result(client.suggest("music",
+        """{
+          |    "song-suggest" : {
+          |        "text" : "n",
+          |        "completion" : {
+          |            "field" : "suggest"
+          |        }
+          |    }
+          |}
+        """.stripMargin), Duration(1, "second")).getResponseBody must contain("Nirvana - Nevermind")
+
+      Await.result(client.deleteIndex("music"), Duration(1, "second")).getResponseBody must contain ("acknowledged")
+    }
+
     "validate and explain queries" in {
       val client = new Client("http://localhost:9200")
 
