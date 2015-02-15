@@ -10,17 +10,23 @@ class ClientSpec extends Specification with JsonMatchers {
 
   sequential
 
+  val server = new ElasticsearchEmbeddedServer
+
+  step {
+    server.start()
+  }
+  
   "Client" should {
 
     "fail usefully" in {
-      val client = new Client("http://localhost:9200")
+      val client = new Client(s"http://localhost:${server.httpPort}")
 
       val res = Await.result(client.verifyIndex("foobarbaz"), Duration(1, "second"))
       res.getStatusCode must beEqualTo(404)
     }
 
     "create and delete indexes" in {
-      val client = new Client("http://localhost:9200")
+      val client = new Client(s"http://localhost:${server.httpPort}")
 
       Await.result(client.createIndex(name = "foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
@@ -30,7 +36,7 @@ class ClientSpec extends Specification with JsonMatchers {
     }
 
     "create and delete aliases" in {
-      val client = new Client("http://localhost:9200")
+      val client = new Client(s"http://localhost:${server.httpPort}")
 
       Await.result(client.createIndex(name = "foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
@@ -44,7 +50,7 @@ class ClientSpec extends Specification with JsonMatchers {
     }
 
     "index and fetch a document" in {
-      val client = new Client("http://localhost:9200")
+      val client = new Client(s"http://localhost:${server.httpPort}")
 
       Await.result(client.index(
         id = Some("foo"),
@@ -72,7 +78,7 @@ class ClientSpec extends Specification with JsonMatchers {
       }
 
       "with index and type" in {
-        val client = new Client("http://localhost:9200")
+        val client = new Client(s"http://localhost:${server.httpPort}")
 
         index(client)(index = "foo", `type` = "bar", id = "1")
         index(client)(index = "foo", `type` = "bar", id = "2")
@@ -90,7 +96,7 @@ class ClientSpec extends Specification with JsonMatchers {
       }
 
       "with index" in {
-        val client = new Client("http://localhost:9200")
+        val client = new Client(s"http://localhost:${server.httpPort}")
 
         index(client)(index = "foo", `type` = "bar1", id = "1")
         index(client)(index = "foo", `type` = "bar2", id = "2")
@@ -116,7 +122,7 @@ class ClientSpec extends Specification with JsonMatchers {
       }
 
       "without index and type" in {
-        val client = new Client("http://localhost:9200")
+        val client = new Client(s"http://localhost:${server.httpPort}")
 
         index(client)(index = "foo1", `type` = "bar1", id = "1")
         index(client)(index = "foo2", `type` = "bar2", id = "2")
@@ -145,7 +151,7 @@ class ClientSpec extends Specification with JsonMatchers {
     }
 
     "index and search for a document" in {
-      val client = new Client("http://localhost:9200")
+      val client = new Client(s"http://localhost:${server.httpPort}")
 
       Await.result(client.index(
         index = "foo", `type` = "foo", id = Some("foo2"),
@@ -162,7 +168,7 @@ class ClientSpec extends Specification with JsonMatchers {
     }
 
     "delete a document by query" in {
-      val client = new Client("http://localhost:9200")
+      val client = new Client(s"http://localhost:${server.httpPort}")
 
       Await.result(client.index(
         index = "foo", `type` = "foo", id = Some("foo2"),
@@ -179,7 +185,7 @@ class ClientSpec extends Specification with JsonMatchers {
     }
 
     "properly manipulate mappings" in {
-      val client = new Client("http://localhost:9200")
+      val client = new Client(s"http://localhost:${server.httpPort}")
 
       Await.result(client.createIndex(name = "foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
@@ -193,7 +199,7 @@ class ClientSpec extends Specification with JsonMatchers {
     }
 
     "validate and explain queries" in {
-      val client = new Client("http://localhost:9200")
+      val client = new Client(s"http://localhost:${server.httpPort}")
 
       Await.result(client.createIndex(name = "foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
@@ -210,7 +216,7 @@ class ClientSpec extends Specification with JsonMatchers {
     }
 
     "handle health checking" in {
-      val client = new Client("http://localhost:9200")
+      val client = new Client(s"http://localhost:${server.httpPort}")
 
       Await.result(client.health(), Duration(1, "second")).getResponseBody must contain("number_of_nodes")
 
@@ -218,7 +224,7 @@ class ClientSpec extends Specification with JsonMatchers {
     }
 
     "handle stats checking" in {
-      val client = new Client("http://localhost:9200")
+      val client = new Client(s"http://localhost:${server.httpPort}")
 
       Await.result(client.createIndex(name = "foo"), Duration(1, "second")).getResponseBody must contain("acknowledged")
       Await.result(client.createIndex(name = "bar"), Duration(1, "second")).getResponseBody must contain("acknowledged")
@@ -245,7 +251,7 @@ class ClientSpec extends Specification with JsonMatchers {
     }
 
     "handle bulk requests" in {
-      val client = new Client("http://localhost:9200")
+      val client = new Client(s"http://localhost:${server.httpPort}")
 
       val res = Await.result(client.bulk(data = """{ "index" : { "_index" : "test", "_type" : "type1", "_id" : "1" } }
 { "field1" : "value1" }
@@ -258,5 +264,9 @@ class ClientSpec extends Specification with JsonMatchers {
 
       Await.result(client.deleteIndex("test"), Duration(1, "second")).getResponseBody must contain("acknowledged")
     }
+  }
+
+  step {
+    server.stop()
   }
 }
