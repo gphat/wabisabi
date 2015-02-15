@@ -54,7 +54,7 @@ import wabisabi._
 val client = new Client("http://localhost:9200")
 
 // Get the cluster's health
-client.health()
+client.health
 
 // Create the index
 client.createIndex(name = "foo")

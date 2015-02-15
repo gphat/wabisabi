@@ -266,7 +266,7 @@ class ClientSpec extends Specification with JsonMatchers {
     "handle health checking" in {
       val client = new Client(s"http://localhost:${server.httpPort}")
 
-      Await.result(client.health, testDuration).getResponseBody must contain("number_of_nodes")
+      Await.result(client.health(), testDuration).getResponseBody must contain("number_of_nodes")
 
       Await.result(client.health(level = Some("indices"), timeout = Some("5")), testDuration).getResponseBody must contain("number_of_nodes")
     }
