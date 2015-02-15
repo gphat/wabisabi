@@ -3,5 +3,6 @@
 Features:
   - Start keeping a damned CHANGELOG
   - Bump to Scala 2.11.5
-  - Include elasticsearch dep in tests to run in-VM ES for integration tests
+  - Include elasticsearch dep in tests to run in-VM ES for integration tests, thanks @mmollaverdi
   - Add travisci
+  - Added suggest, thanks @sokrahta
