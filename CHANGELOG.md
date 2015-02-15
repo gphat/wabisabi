@@ -1,3 +1,9 @@
+## 2.0.16
+
+Bugfixes:
+  - Extend testing timeouts in case things get slow with the in-VM ES
+
+
 ## 2.0.15
 
 Features:
