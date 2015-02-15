@@ -30,4 +30,4 @@ testOptions in Test ++= Seq(
 
 publishTo := Some(Resolver.file("file",  new File( "/Users/gphat/src/mvn-repo/releases" )) )
 
-
+resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
