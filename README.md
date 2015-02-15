@@ -1,5 +1,7 @@
 # Wabisabi
 
+[![Build Status](https://travis-ci.org/gphat/wabisabi.svg?branch=master)](https://travis-ci.org/gphat/wabisabi)
+
 Wabisabi is a Scala [ElasticSearch](http://www.elasticsearch.org/) client that
 uses the REST API and has no dependency on ElasticSearch itself. It is
 extremely minimal, eschewing any sort of parsing, formatting or other such
