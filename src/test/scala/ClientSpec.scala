@@ -15,7 +15,7 @@ class ClientSpec extends Specification with JsonMatchers {
   step {
     server.start()
   }
-  
+
   "Client" should {
 
     "fail usefully" in {
@@ -199,7 +199,7 @@ class ClientSpec extends Specification with JsonMatchers {
     }
 
     "suggest completions" in {
-      val client = new Client("http://localhost:9200")
+      val client = new Client(s"http://localhost:${server.httpPort}")
 
       Await.result(client.createIndex(name = "music"), Duration(1, "second")).getResponseBody must contain("acknowledged")
 
