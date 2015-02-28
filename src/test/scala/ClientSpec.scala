@@ -51,6 +51,23 @@ class ClientSpec extends Specification with JsonMatchers {
       Await.result(client.deleteIndex("foo"), testDuration).getResponseBody must contain("acknowledged")
     }
 
+    "put, get, and delete warmer" in {
+      val client = new Client(s"http://localhost:${server.httpPort}")
+
+      Await.result(client.createIndex(name = "trogdor"), testDuration).getResponseBody must contain("acknowledged")
+
+      Await.result(client.verifyIndex("trogdor"), testDuration)
+
+      Thread.sleep(100) //ES needs some time to make the index first
+      Await.result(client.putWarmer(index = "trogdor", name = "fum", body = """{"query": {"match_all":{}}}"""), testDuration).getResponseBody must contain("acknowledged")
+
+      Await.result(client.getWarmers("trogdor", "fu*"), testDuration).getResponseBody must contain("fum")
+
+      Await.result(client.deleteWarmer("trogdor", "fum"), testDuration).getResponseBody must contain("acknowledged")
+
+      Await.result(client.getWarmers("trogdor", "fu*"), testDuration).getResponseBody must not contain("fum")
+    }
+
     "index and fetch a document" in {
       val client = new Client(s"http://localhost:${server.httpPort}")
 
