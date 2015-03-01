@@ -1,5 +1,8 @@
 ## 2.0.16
 
+Features
+  - Add methods for [warmers](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-warmers.html), thanks [jfenc91](https://github.com/jfenc91)
+
 Bugfixes:
   - Extend testing timeouts in case things get slow with the in-VM ES
 
