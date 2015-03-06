@@ -127,6 +127,17 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Delete a warmer.
+   *
+   * @param index The index of the warmer.
+   * @param name The name of the warmer.
+   */
+  def deleteWarmer(index: String, name:String): Future[Response] = {
+    val req = url(esURL) / index / "_warmer" / name
+    doRequest(req.DELETE)
+  }
+
+  /**
    * Explain a query and document.
    *
    * @param index The name of the index.
@@ -187,6 +198,16 @@ class Client(esURL: String) extends Logging {
    */
   def getMapping(indices: Seq[String], types: Seq[String]): Future[Response] = {
     val req = url(esURL) / indices.mkString(",") / "_mapping" / types.mkString(",")
+    doRequest(req.GET)
+  }
+
+  /**
+   * Get matching warmers.
+   * @param index Name of index to check.
+   * @param name Expression to match warmer.
+   */
+  def getWarmers(index: String, name: String): Future[Response] = {
+    val req = url(esURL) / index / "_warmer" / name
     doRequest(req.GET)
   }
 
@@ -285,6 +306,18 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Add a warmer.
+   *
+   * @param index The index to add the warmer.
+   * @param name The name of the warmer.
+   * @param body The warmer content.
+   */
+  def putWarmer(index: String, name:String, body: String): Future[Response] = {
+    val req = (url(esURL) / index / "_warmer" / name).setBody(body.getBytes(StandardCharsets.UTF_8))
+    doRequest(req.PUT)
+  }
+  
+  /**
    * Refresh an index.
    *
    * Makes all operations performed since the last refresh available for search.
@@ -304,6 +337,17 @@ class Client(esURL: String) extends Logging {
    */
   def search(index: String, query: String, `type`: Option[String] = None): Future[Response] = {
     val req = (url(esURL) / index / `type`.getOrElse("") / "_search").setBody(query.getBytes(StandardCharsets.UTF_8))
+    doRequest(req.POST)
+  }
+
+  /**
+   * Suggest completions based on analyzed documents.
+   *
+   * @param index The index to search
+   * @param query The query to execute.
+   */
+  def suggest(index: String, query: String): Future[Response] = {
+    val req = (url(esURL) / index / "_suggest").setBody(query.getBytes(StandardCharsets.UTF_8))
     doRequest(req.POST)
   }
 

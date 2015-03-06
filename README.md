@@ -1,9 +1,11 @@
 # Wabisabi
 
+[![Build Status](https://travis-ci.org/gphat/wabisabi.svg?branch=master)](https://travis-ci.org/gphat/wabisabi)
+
 Wabisabi is a Scala [ElasticSearch](http://www.elasticsearch.org/) client that
 uses the REST API and has no dependency on ElasticSearch itself. It is
 extremely minimal, eschewing any sort of parsing, formatting or other such
-complication.
+complication. You can [read about why I wrote it if you like](http://onemogin.com/programming/oss/wabisabi-scala-http-client-for-elasticsearch.html).
 
 Wabisabi is based on the [dispatch](http://dispatch.databinder.net/Dispatch.html)
 asynchronous HTTP library. Therefore, all of the returned values are
@@ -34,7 +36,7 @@ bits as needed or as patches arrive.
 
 ```
 // Add the Dep
-libraryDependencies += "wabisabi" %% "wabisabi" % "2.0.14"
+libraryDependencies += "wabisabi" %% "wabisabi" % "2.0.16"
 
 // And a the resolver
 resolvers += "gphat" at "https://raw.github.com/gphat/mvn-repo/master/releases/",
@@ -52,7 +54,7 @@ import wabisabi._
 val client = new Client("http://localhost:9200")
 
 // Get the cluster's health
-client.health()
+client.health
 
 // Create the index
 client.createIndex(name = "foo")
@@ -80,6 +82,9 @@ client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }").getS
 
 // Explain a query.
 client.explain(index = "foo", `type` = "foo", id = "foo2", query = "{\"query\": { \"term\": { \"foo\":\"bar\"} } }")
+
+// Suggestion possible term/phrase completions.
+client.suggest(index = "foo", query = "{\"suggest\": {\"text\": \"bar\", \"completion\": {\"field\": \"foo\"} } }")
 
 // Delete the document.
 client.delete("foo", "foo", "foo")
