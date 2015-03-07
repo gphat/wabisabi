@@ -302,9 +302,9 @@ class Client(esURL: String) extends Logging {
    * @param ignoreConflicts When merge has conflicts overwrite mapping anyway, default false.
    */
   def putMapping(indices: Seq[String], `type`: String, body: String, ignoreConflicts: Boolean = false): Future[Response] = {
-    val req = (url(esURL) / indices.mkString(",") / `type` / "_mapping").
-      setQueryParameters(Map("ignore_conflicts" -> List(ignoreConflicts.toString))).
-      setBody(body.getBytes(StandardCharsets.UTF_8))
+    val req = (url(esURL) / indices.mkString(",") / `type` / "_mapping")
+      .setQueryParameters(Map("ignore_conflicts" -> List(ignoreConflicts.toString)))
+      .setBody(body.getBytes(StandardCharsets.UTF_8))
     doRequest(req.PUT)
   }
 
