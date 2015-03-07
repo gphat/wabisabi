@@ -316,7 +316,7 @@ class Client(esURL: String) extends Logging {
     val req = (url(esURL) / index / "_warmer" / name).setBody(body.getBytes(StandardCharsets.UTF_8))
     doRequest(req.PUT)
   }
-  
+
   /**
    * Refresh an index.
    *
@@ -430,8 +430,6 @@ class Client(esURL: String) extends Logging {
         dispatch.url("")
       }
     }
-
-
   }
 }
 

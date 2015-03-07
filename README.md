@@ -97,4 +97,8 @@ client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }").getRes
 
 // Delete the index
 client.deleteIndex("foo")
+
+// Shut down the client. NOTE: This will also shutdown any other Dispatch-based
+// HTTP stuff you have going on. Be careful!
+Client.shutdown()
 ```
