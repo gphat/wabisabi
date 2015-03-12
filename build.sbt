@@ -2,7 +2,7 @@ organization := "wabisabi"
 
 name := "wabisabi"
 
-version := "2.0.16"
+version := "2.0.17"
 
 scalaVersion := "2.11.5"
 
