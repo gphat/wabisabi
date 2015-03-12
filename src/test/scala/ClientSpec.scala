@@ -214,6 +214,14 @@ class ClientSpec extends Specification with JsonMatchers {
 
       Await.result(client.getMapping(Seq("foo"), Seq("foo")), testDuration).getResponseBody must contain("store")
 
+      Await.result(client.putMapping(Seq("foo"), "foo",
+        """{"foo": { "properties": { "message": { "type": "integer", "store": true } } } }""",
+        ignoreConflicts = false), testDuration).getResponseBody must contain("MergeMappingException")
+
+      Await.result(client.putMapping(Seq("foo"), "foo",
+        """{"foo": { "properties": { "message": { "type": "integer", "store": true } } } }""",
+        ignoreConflicts = true), testDuration).getResponseBody must contain("acknowledged")
+
       Await.result(client.deleteIndex("foo"), testDuration).getResponseBody must contain("acknowledged")
     }
 

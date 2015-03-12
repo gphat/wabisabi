@@ -62,6 +62,15 @@ client.createIndex(name = "foo")
 // Verify the index exists
 client.verifyIndex("foo").getStatusCode // Should be 200!
 
+// Get mapping
+client.getMapping(indices = Seq("foo"), types = Seq("bar"))
+
+// Put mapping, optionally ignore conflicts
+client.putMapping(indices = Seq("foo"), `type` = "bar",
+  body = "{\"bar\": {\"properties\": {\"baz\": {\"type\": \"string\"} } } }",
+  ignoreConflicts = true
+)
+
 // Add a document to the index.
 client.index(
   index = "foo", `type` = "foo", id = Some("foo"),

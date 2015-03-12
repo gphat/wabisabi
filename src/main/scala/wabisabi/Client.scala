@@ -299,9 +299,12 @@ class Client(esURL: String) extends Logging {
    * @param indices A sequence of index names for which mappings will be added.
    * @param type The type name to which the mappings will be applied.
    * @param body The mapping.
+   * @param ignoreConflicts When merge has conflicts overwrite mapping anyway, default false.
    */
-  def putMapping(indices: Seq[String], `type`: String, body: String): Future[Response] = {
-    val req = (url(esURL) / indices.mkString(",") / `type` / "_mapping").setBody(body.getBytes(StandardCharsets.UTF_8))
+  def putMapping(indices: Seq[String], `type`: String, body: String, ignoreConflicts: Boolean = false): Future[Response] = {
+    val req = (url(esURL) / indices.mkString(",") / `type` / "_mapping")
+      .setQueryParameters(Map("ignore_conflicts" -> List(ignoreConflicts.toString)))
+      .setBody(body.getBytes(StandardCharsets.UTF_8))
     doRequest(req.PUT)
   }
 
