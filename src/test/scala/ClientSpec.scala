@@ -20,6 +20,14 @@ class ClientSpec extends Specification with JsonMatchers {
 
   "Client" should {
 
+    def index(client: Client)(index: String, `type`: String, id: String, data: Option[String] = None) = {
+      Await.result(client.index(
+        id = Some(id),
+        index = index, `type` = `type`,
+        data = data.getOrElse(s"""{"id":"$id"}"""), refresh = true
+      ), testDuration).getResponseBody must contain("\"_version\"")
+    }
+
     "fail usefully" in {
       val client = new Client(s"http://localhost:${server.httpPort}")
 
@@ -84,13 +92,6 @@ class ClientSpec extends Specification with JsonMatchers {
 
     "get multiple documents" in {
 
-      def index(client: Client)(index: String, `type`: String, id: String) = {
-        Await.result(client.index(
-          id = Some(id),
-          index = index, `type` = `type`,
-          data = s"""{"id":"$id"}""", refresh = true
-        ), testDuration).getResponseBody must contain("\"_version\"")
-      }
 
       def delete(client: Client)(index: String, `type`: String, id: String) = {
         Await.result(client.delete(index, `type`, id), testDuration).getResponseBody must contain("\"found\"")
@@ -184,6 +185,68 @@ class ClientSpec extends Specification with JsonMatchers {
       Await.result(client.delete("foo", "foo", "foo2"), testDuration).getResponseBody must contain("\"found\"")
 
       Await.result(client.deleteIndex("foo"), testDuration).getResponseBody must contain("acknowledged")
+    }
+
+    "multi-search" in {
+
+      // TODO: Consider changing all the other tests to use this method for deleting indexes
+      def deleteIndex(client: Client)(index: String) = {
+        Await.result(client.deleteIndex(index), testDuration).getResponseBody must contain("\"acknowledged\"")
+      }
+
+      val client = new Client(s"http://localhost:${server.httpPort}")
+
+      "with index and type" in {
+        index(client)(index = "foo", `type` = "bar", id = "1", data = Some( """{"name": "Fred Smith"}"""))
+        index(client)(index = "foo", `type` = "bar", id = "2", data = Some( """{"name": "Mary Jones"}"""))
+
+        Await.result(client.msearch(index = Some("foo"), `type` = Some("bar"), query =
+          """
+            |{}
+            |{"query" : {"match" : {"name": "Fred"}}}
+            |{}
+            |{"query" : {"match" : {"name": "Jones"}}}
+          """.stripMargin), Duration(1, "second")).getResponseBody must
+          /("responses") /# 0 / ("hits") / ("total" -> "1.0") and
+          /("responses") /# 1 / ("hits") / ("total" -> "1.0")
+
+        deleteIndex(client)("foo")
+      }
+
+      "with index" in {
+        index(client)(index = "foo", `type` = "bar1", id = "1", data = Some( """{"name": "Fred Smith"}"""))
+        index(client)(index = "foo", `type` = "bar2", id = "2", data = Some( """{"name": "Mary Jones"}"""))
+
+        Await.result(client.msearch(index = Some("foo"), query =
+          """
+            |{"type": "bar1"}
+            |{"query" : {"match" : {"name": "Fred"}}}
+            |{"type": "bar2"}
+            |{"query" : {"match" : {"name": "Jones"}}}
+          """.stripMargin), Duration(1, "second")).getResponseBody must
+          /("responses") /# 0 / ("hits") / ("total" -> "1.0") and
+          /("responses") /# 1 / ("hits") / ("total" -> "1.0")
+
+        deleteIndex(client)("foo")
+      }
+
+      "without index or type" in {
+        index(client)(index = "foo1", `type` = "bar", id = "1", data = Some( """{"name": "Fred Smith"}"""))
+        index(client)(index = "foo2", `type` = "bar", id = "2", data = Some( """{"name": "Mary Jones"}"""))
+
+        Await.result(client.msearch(index = Some("foo"), query =
+          """
+            |{"index": "foo1"}
+            |{"query" : {"match" : {"name": "Fred"}}}
+            |{"index": "foo2"}
+            |{"query" : {"match" : {"name": "Jones"}}}
+          """.stripMargin), Duration(1, "second")).getResponseBody must
+          /("responses") /# 0 / ("hits") / ("total" -> "1.0") and
+          /("responses") /# 1 / ("hits") / ("total" -> "1.0")
+
+        deleteIndex(client)("foo1")
+        deleteIndex(client)("foo2")
+      }
     }
 
     "delete a document by query" in {
