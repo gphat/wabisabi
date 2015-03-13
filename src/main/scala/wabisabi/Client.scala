@@ -13,7 +13,7 @@ import com.netaporter.uri.dsl._
 
 class Client(esURL: String) extends Logging {
 
-  // XXX multiget, update, multisearch, percolate, more like this,
+  // XXX update, percolate, more like this,
   //
 
   /**
@@ -352,6 +352,19 @@ class Client(esURL: String) extends Logging {
   def suggest(index: String, query: String): Future[Response] = {
     val req = (url(esURL) / index / "_suggest").setBody(query.getBytes(StandardCharsets.UTF_8))
     doRequest(req.POST)
+  }
+
+  /**
+   * Get multiple documents by ID.
+   *
+   * @param index The optional name of the index.
+   * @param type The optional type of the document.
+   * @param query The query to execute.
+   */
+  def msearch(index: Option[String] = None, `type`: Option[String] = None, query: String): Future[Response] = {
+    val req = (url(esURL) / index.getOrElse("") / `type`.getOrElse("") / "_msearch")
+      .setBody(query.getBytes(StandardCharsets.UTF_8))
+    doRequest(req.GET)
   }
 
   /**
