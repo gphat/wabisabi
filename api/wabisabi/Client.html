@@ -859,6 +859,25 @@ index.</p></div><dl class="paramcmts block"><dt class="param">index</dt><dd clas
       <p class="shortcomment cmt">Get multiple documents by ID.</p><div class="fullcomment"><div class="comment cmt"><p>Get multiple documents by ID.
 </p></div><dl class="paramcmts block"><dt class="param">index</dt><dd class="cmt"><p>The optional name of the index.</p></dd><dt class="param">type</dt><dd class="cmt"><p>The optional type of the document.</p></dd><dt class="param">query</dt><dd class="cmt"><p>The query to execute.
 </p></dd></dl></div>
+    </li><li name="wabisabi.Client#msearch" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="msearch(index:Option[String],type:Option[String],query:String):dispatch.Future[com.ning.http.client.Response]"></a>
+      <a id="msearch(Option[String],Option[String],String):Future[Response]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">msearch</span><span class="params">(<span name="index">index: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">None</span></span>, <span name="type">type: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">None</span></span>, <span name="query">query: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="dispatch.Future">Future</span>[<span class="extype" name="com.ning.http.client.Response">Response</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../index.html#wabisabi.Client@msearch(index:Option[String],type:Option[String],query:String):dispatch.Future[com.ning.http.client.Response]" title="Permalink" target="_top">
+        <img src="../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Get multiple documents by ID.</p><div class="fullcomment"><div class="comment cmt"><p>Get multiple documents by ID.
+</p></div><dl class="paramcmts block"><dt class="param">index</dt><dd class="cmt"><p>The optional name of the index.</p></dd><dt class="param">type</dt><dd class="cmt"><p>The optional type of the document.</p></dd><dt class="param">query</dt><dd class="cmt"><p>The query to execute.
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -911,23 +930,23 @@ index.</p></div><dl class="paramcmts block"><dt class="param">index</dt><dd clas
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="wabisabi.Client#putMapping" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="putMapping(indices:Seq[String],type:String,body:String):dispatch.Future[com.ning.http.client.Response]"></a>
-      <a id="putMapping(Seq[String],String,String):Future[Response]"></a>
+      <a id="putMapping(indices:Seq[String],type:String,body:String,ignoreConflicts:Boolean):dispatch.Future[com.ning.http.client.Response]"></a>
+      <a id="putMapping(Seq[String],String,String,Boolean):Future[Response]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">putMapping</span><span class="params">(<span name="indices">indices: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="type">type: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="body">body: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="dispatch.Future">Future</span>[<span class="extype" name="com.ning.http.client.Response">Response</span>]</span>
+        <span class="name">putMapping</span><span class="params">(<span name="indices">indices: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="type">type: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="body">body: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="ignoreConflicts">ignoreConflicts: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="dispatch.Future">Future</span>[<span class="extype" name="com.ning.http.client.Response">Response</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client@putMapping(indices:Seq[String],type:String,body:String):dispatch.Future[com.ning.http.client.Response]" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.Client@putMapping(indices:Seq[String],type:String,body:String,ignoreConflicts:Boolean):dispatch.Future[com.ning.http.client.Response]" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
       <p class="shortcomment cmt">Put a mapping for a list of indices.</p><div class="fullcomment"><div class="comment cmt"><p>Put a mapping for a list of indices.
-</p></div><dl class="paramcmts block"><dt class="param">indices</dt><dd class="cmt"><p>A sequence of index names for which mappings will be added.</p></dd><dt class="param">type</dt><dd class="cmt"><p>The type name to which the mappings will be applied.</p></dd><dt class="param">body</dt><dd class="cmt"><p>The mapping.
+</p></div><dl class="paramcmts block"><dt class="param">indices</dt><dd class="cmt"><p>A sequence of index names for which mappings will be added.</p></dd><dt class="param">type</dt><dd class="cmt"><p>The type name to which the mappings will be applied.</p></dd><dt class="param">body</dt><dd class="cmt"><p>The mapping.</p></dd><dt class="param">ignoreConflicts</dt><dd class="cmt"><p>When merge has conflicts overwrite mapping anyway, default false.
 </p></dd></dl></div>
     </li><li name="wabisabi.Client#putWarmer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="putWarmer(index:String,name:String,body:String):dispatch.Future[com.ning.http.client.Response]"></a>
