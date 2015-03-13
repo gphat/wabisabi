@@ -1,8 +1,11 @@
+## 2.0.18
+Features:
+  - Add multi search, thanks [davidbkemp](https://github.com/davidbkemp)
+
 ## 2.0.17
 
 Features:
   - Add `ignoreConflicts` parameter to `putMapping`, thanks [sokrahta](https://github.com/sokrahta)
-
 
 Improvements:
  - Documented the `putMapping` and `getMapping` methods in the README, thanks [sokrahta](https://github.com/sokrahta)
