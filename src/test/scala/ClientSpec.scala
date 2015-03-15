@@ -22,7 +22,9 @@ class ClientSpec extends Specification with JsonMatchers {
 
     def createIndex(client: Client)(index: String) = {
       Await.result(client.createIndex(name = index), testDuration).getResponseBody must contain("acknowledged")
-      Await.result(client.verifyIndex(index), testDuration)
+      // Note: we cannot wait for green as the index, by default, will have a missing replica.
+      // TODO: When defect #25 is fixed, we can specify that the index should have no replicas, and then we can wait for "green".
+      Await.result(client.health(List(index), waitForStatus = Some("yellow"), timeout = Some("5s")), testDuration)
     }
 
     def index(client: Client)(index: String, `type`: String, id: String, data: Option[String] = None) = {
