@@ -266,6 +266,22 @@ class ClientSpec extends Specification with JsonMatchers {
       Await.result(client.deleteIndex("foo"), testDuration).getResponseBody must contain("acknowledged")
     }
 
+    "get settings" in {
+      val client = new Client(s"http://localhost:${server.httpPort}")
+
+      Await.result(client.createIndex(name = "replicas3",
+        settings = Some( """{"settings": {"number_of_shards" : 1, "number_of_replicas": 3}}""")
+      ), testDuration).getResponseBody must contain("acknowledged")
+
+      // The tests start a single-node cluster and so the index can never be green.  Hence we only wait for "yellow".
+      Await.result(client.health(List("replicas3"), waitForStatus = Some("yellow"), timeout = Some("5s")), testDuration)
+
+      Await.result(client.getSettings(List("replicas3")), testDuration).getResponseBody must
+        /("replicas3") /("settings") /("index") / ("number_of_replicas" -> "3")
+
+      Await.result(client.deleteIndex("replicas3"), testDuration).getResponseBody must contain("acknowledged")
+    }
+
     "properly manipulate mappings" in {
       val client = new Client(s"http://localhost:${server.httpPort}")
 

@@ -202,6 +202,16 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Get the settings for a list of indices.
+   *
+   * @param indices A sequence of index names for which settings will be fetched.
+   */
+  def getSettings(indices: Seq[String]): Future[Response] = {
+    val req = url(esURL) / indices.mkString(",") / "_settings"
+    doRequest(req.GET)
+  }
+
+  /**
    * Get matching warmers.
    * @param index Name of index to check.
    * @param name Expression to match warmer.
