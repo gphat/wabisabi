@@ -65,12 +65,16 @@ class Client(esURL: String) extends Logging {
    */
   def createIndex(name: String, settings: Option[String] = None): Future[Response] = {
     val req = url(esURL) / name
-    // Add the settings if we have any
-    val sreq = settings.map({ s => req.setBody(s.getBytes(StandardCharsets.UTF_8)) }).getOrElse(req)
 
     // Do something hinky to get the trailing slash on the URL
-    val trailedReq = Req(_.setUrl(sreq.toRequest.getUrl + "/"))
-    doRequest(trailedReq.PUT)
+    // TODO: Find out if we really need to do this.  The tests pass without it!
+    val withTrailingSlash = Req(_.setUrl(req.toRequest.getUrl + "/"))
+
+    // Add the settings if we have any
+    val withSettingsIfPresent =
+      settings.map({ s => withTrailingSlash.setBody(s.getBytes(StandardCharsets.UTF_8)) }).getOrElse(withTrailingSlash)
+
+    doRequest(withSettingsIfPresent.PUT)
   }
 
   /**
@@ -198,6 +202,16 @@ class Client(esURL: String) extends Logging {
    */
   def getMapping(indices: Seq[String], types: Seq[String]): Future[Response] = {
     val req = url(esURL) / indices.mkString(",") / "_mapping" / types.mkString(",")
+    doRequest(req.GET)
+  }
+
+  /**
+   * Get the settings for a list of indices.
+   *
+   * @param indices A sequence of index names for which settings will be fetched.
+   */
+  def getSettings(indices: Seq[String]): Future[Response] = {
+    val req = url(esURL) / indices.mkString(",") / "_settings"
     doRequest(req.GET)
   }
 
