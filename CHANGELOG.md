@@ -1,3 +1,13 @@
+## 2.0.19
+Features:
+  - Add `getSettings` method, thanks [davidbkemp](https://github.com/davidbkemp)
+
+Bugfixes:
+  - Fix that `createIndex` wasn't properly setting any `settings` specified, thanks [davidbkemp](https://github.com/davidbkemp)
+
+Improvements:
+- Improve reuse of code in unit tests, thanks [davidbkemp](https://github.com/davidbkemp)
+
 ## 2.0.18
 Features:
   - Add multi search, thanks [davidbkemp](https://github.com/davidbkemp)
