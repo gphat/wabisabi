@@ -341,7 +341,7 @@ class Client(esURL: String) extends Logging {
    * @param index Name of the index to refresh
    */
   def refresh(index: String) = {
-    val req = url(esURL) / index
+    val req = url(esURL) / index / "_refresh"
     doRequest(req.POST)
   }
 
