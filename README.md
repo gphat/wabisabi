@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/gphat/wabisabi.svg?branch=master)](https://travis-ci.org/gphat/wabisabi)
 
-Wabisabi is a Scala [ElasticSearch](http://www.elasticsearch.org/) client that
-uses the REST API and has no dependency on ElasticSearch itself. It is
+Wabisabi is a Scala [Elasticearch](http://www.elasticsearch.org/) client that
+uses the REST API and has no dependency on Elasticsearch itself. It is
 extremely minimal, eschewing any sort of parsing, formatting or other such
 complication. You can [read about why I wrote it if you like](http://onemogin.com/programming/oss/wabisabi-scala-http-client-for-elasticsearch.html).
 
@@ -24,19 +24,21 @@ scala 2.11.
 
 ## Notes
 
-Wabisabi was tested against ElasticSearch >= 1.1.0.
+Wabisabi was tested against Elasticsearch >= 1.4.0.
 
 Version 2.0.0 switched to returning `Future[Response]` rather than `Future[String]`
 so that errors can be handled.
 
-This does not implement every piece of the ElasticSearch API. I will add other
+This does not implement every piece of the Elasticsearch API. I will add other
 bits as needed or as patches arrive.
+
+Version 2.1.0 uses Elasticsearch 1.5.0
 
 # Using It
 
 ```
 // Add the Dep
-libraryDependencies += "wabisabi" %% "wabisabi" % "2.0.19"
+libraryDependencies += "wabisabi" %% "wabisabi" % "2.1.0"
 
 // And a the resolver
 resolvers += "gphat" at "https://raw.github.com/gphat/mvn-repo/master/releases/",
