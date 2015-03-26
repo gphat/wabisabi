@@ -3,7 +3,6 @@ Bugfixes:
   - Fix broken `refresh` method, thanks [mmollaverdi](https://github.com/mmollaverdi)
 
 Improvements:
-  - Upgrade to specs2 version 3.2
   - Upgrade to Scala 2.11.6
   - Upgrade to Elasticsearch 1.5.0
 
