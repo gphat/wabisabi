@@ -393,6 +393,17 @@ class ClientSpec extends Specification with JsonMatchers {
       deleteIndex(client)("bar")
     }
 
+    "handle refresh" in {
+      val client = new Client(s"http://localhost:${server.httpPort}")
+
+      createIndex(client)("test")
+
+      val res = Await.result(client.refresh("test"), testDuration).getResponseBody
+      res must contain("\"successful\"")
+
+      deleteIndex(client)("test")
+    }
+
     "handle bulk requests" in {
       val client = new Client(s"http://localhost:${server.httpPort}")
 
