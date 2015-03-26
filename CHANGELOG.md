@@ -1,3 +1,12 @@
+## 2.1.0
+Bugfixes:
+  - Fix broken `refresh` method, thanks [mmollaverdi](https://github.com/mmollaverdi)
+
+Improvements:
+  - Upgrade to specs2 version 3.2
+  - Upgrade to Scala 2.11.6
+  - Upgrade to Elasticsearch 1.5.0
+
 ## 2.0.19
 Features:
   - Add `getSettings` method, thanks [davidbkemp](https://github.com/davidbkemp)
@@ -6,7 +15,7 @@ Bugfixes:
   - Fix that `createIndex` wasn't properly setting any `settings` specified, thanks [davidbkemp](https://github.com/davidbkemp)
 
 Improvements:
-- Improve reuse of code in unit tests, thanks [davidbkemp](https://github.com/davidbkemp)
+  - Improve reuse of code in unit tests, thanks [davidbkemp](https://github.com/davidbkemp)
 
 ## 2.0.18
 Features:
@@ -18,8 +27,8 @@ Features:
   - Add `ignoreConflicts` parameter to `putMapping`, thanks [sokrahta](https://github.com/sokrahta)
 
 Improvements:
- - Documented the `putMapping` and `getMapping` methods in the README, thanks [sokrahta](https://github.com/sokrahta)
- - Documented the `shutdown()` method in the README for curious users
+  - Documented the `putMapping` and `getMapping` methods in the README, thanks [sokrahta](https://github.com/sokrahta)
+  - Documented the `shutdown()` method in the README for curious users
 
 ## 2.0.16
 
