@@ -323,6 +323,18 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Put settings for a list of indices.
+   *
+   * @param indices A sequence of index names for which settings will be updated.
+   * @param body The settings.
+   */
+  def putSettings(indices: Seq[String], body: String): Future[Response] = {
+    val req = (url(esURL) / indices.mkString(",") / "_settings")
+      .setBody(body.getBytes(StandardCharsets.UTF_8))
+    doRequest(req.PUT)
+  }
+
+  /**
    * Add a warmer.
    *
    * @param index The index to add the warmer.
