@@ -148,7 +148,6 @@ class Client(esURL: String) extends Logging {
    * @param type The optional type document to explain.
    * @param id The ID of the document.
    * @param query The query.
-   * @param explain If true, then the response will contain more detailed information about the query.
    */
   def explain(index: String, `type`: String, id: String, query: String): Future[Response] = {
     // XXX Lots of params to add
@@ -323,6 +322,18 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Put settings for a list of indices.
+   *
+   * @param indices A sequence of index names for which settings will be updated.
+   * @param body The settings.
+   */
+  def putSettings(indices: Seq[String], body: String): Future[Response] = {
+    val req = (url(esURL) / indices.mkString(",") / "_settings")
+      .setBody(body.getBytes(StandardCharsets.UTF_8))
+    doRequest(req.PUT)
+  }
+
+  /**
    * Add a warmer.
    *
    * @param index The index to add the warmer.
@@ -413,7 +424,8 @@ class Client(esURL: String) extends Logging {
   /**
    * Verify that a type exists.
    *
-   * @param name The name of the type to verify.
+   * @param index The name of the index to verify.
+   * @param type The name of the document type to verify.
    */
   def verifyType(index: String, `type`: String): Future[Response] = {
     val req = url(esURL) / index / `type`

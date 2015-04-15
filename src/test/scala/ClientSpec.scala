@@ -298,6 +298,22 @@ class ClientSpec extends Specification with JsonMatchers {
       deleteIndex(client)("foo")
     }
 
+    "properly update settings" in {
+      val client = new Client(s"http://localhost:${server.httpPort}")
+
+      createIndex(client)("foo")
+      createIndex(client)("bar")
+
+      Await.result(client.putSettings(Seq("foo", "bar"), """{"index.blocks.read": true}"""), testDuration).getResponseBody must contain("acknowledged")
+
+      Await.result(client.getSettings(Seq("foo", "bar")), testDuration).getResponseBody must
+        / ("foo") / "settings" / "index" / "blocks" / ("read" -> true) and
+        / ("bar") / "settings" / "index" / "blocks" / ("read" -> true)
+
+      deleteIndex(client)("foo")
+      deleteIndex(client)("bar")
+    }
+
     "suggest completions" in {
       val client = new Client(s"http://localhost:${server.httpPort}")
 
