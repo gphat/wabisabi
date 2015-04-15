@@ -1,3 +1,10 @@
+## 2.1.1
+Bugfixes:
+  - Fix some incorrect documention, thanks [mmollaverdi](https://github.com/mmollaverdi)
+
+Features:
+  - Add `putSettings` method, thanks [mmollaverdi](https://github.com/mmollaverdi)
+
 ## 2.1.0
 Bugfixes:
   - Fix broken `refresh` method, thanks [mmollaverdi](https://github.com/mmollaverdi)
