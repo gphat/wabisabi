@@ -99,6 +99,13 @@ client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }").map(_.
 // Search for all documents of a specific type!
 client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }", `type`= "tweet").map(_.getResponseBody)
 
+// Search for all documents with customised search URI parameters as per [this](http://www.elastic.co/guide/en/elasticsearch/reference/current/search-uri-request.html) reference document.
+client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}",
+    uriParameters = SearchUriParameters(searchType = Some(Count))).getResponseBody // search_type set to Count
+
+client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}",
+    uriParameters = SearchUriParameters(scroll = Some("1m"), searchType = Some(Scan))) // Scanning all the documents with one minute scrolls
+
 // Validate a query.
 client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }").map(_.getStatusCode) // Should be Future(200)
 
