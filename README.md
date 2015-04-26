@@ -99,12 +99,15 @@ client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }").map(_.
 // Search for all documents of a specific type!
 client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }", `type`= "tweet").map(_.getResponseBody)
 
-// Search for all documents with customised search URI parameters as per [this](http://www.elastic.co/guide/en/elasticsearch/reference/current/search-uri-request.html) reference document.
+// SearchUriParameters case class allows for customised search URI parameters, such as search_type to be passed in a search request as per [this](http://www.elastic.co/guide/en/elasticsearch/reference/current/search-uri-request.html) reference document.
+// The list of different search types, in addition to documentation on how each search type is executed by elasticsearch can be seen [here](http://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-search-type.html).
+// For example, to search for all documents with `Count` search type:
 client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}",
-    uriParameters = SearchUriParameters(searchType = Some(Count))).getResponseBody // search_type set to Count
+    uriParameters = SearchUriParameters(searchType = Some(Count)))
 
+// Or, search for all documents with a `Scan` search type and a given scroll timeout (used for quick retrieval of all documents without sorting):
 client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}",
-    uriParameters = SearchUriParameters(scroll = Some("1m"), searchType = Some(Scan))) // Scanning all the documents with one minute scrolls
+    uriParameters = SearchUriParameters(scroll = Some("1m"), searchType = Some(Scan)))
 
 // Validate a query.
 client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }").map(_.getStatusCode) // Should be Future(200)
