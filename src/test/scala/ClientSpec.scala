@@ -189,6 +189,20 @@ class ClientSpec extends Specification with JsonMatchers {
       deleteIndex(client)("foo")
     }
 
+    "search with search_type and scroll parameters" in {
+      val client = new Client(s"http://localhost:${server.httpPort}")
+
+      index(client)(index = "foo", `type` = "bar", id = "bar1", data = Some("{\"abc\":\"def\"}"))
+
+      Await.result(client.search("foo", "{\"query\": { \"match_all\": {} } }", Some("bar"),
+        SearchUriParameters(scroll = Some("1m"))), testDuration).getResponseBody must contain("\"bar1\"")
+
+      Await.result(client.search("foo", "{\"query\": { \"match_all\": {} } }", Some("bar"),
+        SearchUriParameters(scroll = Some("1m"), searchType = Some(Scan))), testDuration).getResponseBody must contain("\"_scroll_id\"")
+
+      deleteIndex(client)("foo")
+    }
+
     "multi-search" in {
 
       val client = new Client(s"http://localhost:${server.httpPort}")

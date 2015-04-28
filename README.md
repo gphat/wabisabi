@@ -14,7 +14,18 @@ asynchronous HTTP library. Therefore, all of the returned values are
 The returned object is a [Response](http://sonatype.github.io/async-http-client/apidocs/reference/com/ning/http/client/Response.html)
 from the async-http-client library. Normally you'll want to use `getResponseBody`
 to get the response but you can also check `getStatusCode` to verify something
-didn't go awry.
+didn't go awry. Since the returned response object is wrapped in a Future, you would need to `map` over it to get a
+Future of response code or body, e.g.:
+
+```
+val futureStatusCode: Future[Int] = client.verifyIndex("foo").map(_.getStatusCode)
+```
+
+Or,
+
+```
+val futureResponseBody: Future[String] = client.verifyIndex("foo").map(_.getResponseBody)
+```
 
 ## Dependencies
 
@@ -62,7 +73,7 @@ client.health
 client.createIndex(name = "foo")
 
 // Verify the index exists
-client.verifyIndex("foo").getStatusCode // Should be 200!
+client.verifyIndex("foo").map(_.getStatusCode) // Should be Future(200)
 
 // Get mapping
 client.getMapping(indices = Seq("foo"), types = Seq("bar"))
@@ -80,16 +91,26 @@ client.index(
 )
 
 // Fetch that document by it's id.
-client.get("foo", "foo", "foo").getResponseBody
+client.get("foo", "foo", "foo").map(_.getResponseBody)
 
 // Search for all documents.
-client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }").getResponseBody
+client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }").map(_.getResponseBody)
 
 // Search for all documents of a specific type!
-client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }", `type`= "tweet").getResponseBody
+client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }", `type`= "tweet").map(_.getResponseBody)
+
+// SearchUriParameters case class allows for customised search URI parameters, such as search_type to be passed in a search request as per [this](http://www.elastic.co/guide/en/elasticsearch/reference/current/search-uri-request.html) reference document.
+// The list of different search types, in addition to documentation on how each search type is executed by elasticsearch can be seen [here](http://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-search-type.html).
+// For example, to search for all documents with `Count` search type:
+client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}",
+    uriParameters = SearchUriParameters(searchType = Some(Count)))
+
+// Or, search for all documents with a `Scan` search type and a given scroll timeout (used for quick retrieval of all documents without sorting):
+client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}",
+    uriParameters = SearchUriParameters(scroll = Some("1m"), searchType = Some(Scan)))
 
 // Validate a query.
-client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }").getStatusCode // Should be 200
+client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }").map(_.getStatusCode) // Should be Future(200)
 
 // Explain a query.
 client.explain(index = "foo", `type` = "foo", id = "foo2", query = "{\"query\": { \"term\": { \"foo\":\"bar\"} } }")
@@ -104,7 +125,7 @@ client.delete("foo", "foo", "foo")
 client.deleteByQuery(Seq("foo"), Seq.empty[String], "{ \"match_all\": {} }")
 
 // Count the matches to a query
-client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }").getResponseBody
+client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }").map(_.getResponseBody)
 
 // Delete the index
 client.deleteIndex("foo")

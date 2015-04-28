@@ -4,8 +4,6 @@ import com.ning.http.client.Response
 import dispatch._
 import Defaults._
 import grizzled.slf4j.Logging
-import java.net.URL
-import scala.concurrent.Promise
 import java.nio.charset.StandardCharsets
 
 import com.netaporter.uri.Uri
@@ -243,17 +241,20 @@ class Client(esURL: String) extends Logging {
 
     val paramNames = List("level", "wait_for_status", "wait_for_relocation_shards", "wait_for_nodes", "timeout")
     val params = List(level, waitForStatus, waitForRelocatingShards, waitForNodes, timeout)
+    val freq = addQueryParams(req, paramNames, params)
 
+    doRequest(freq.GET)
+  }
+
+  private def addQueryParams(req: Req, paramNames: List[String], params: List[Option[String]]) = {
     // Fold in all the parameters that might've come in.
-    val freq = paramNames.zip(params).foldLeft(req)(
+    paramNames.zip(params).foldLeft(req)(
       (r, nameAndParam) => {
         nameAndParam._2.map({ p =>
           r.addQueryParameter(nameAndParam._1, p)
         }).getOrElse(r)
       }
     )
-
-    doRequest(freq.GET)
   }
 
   /**
@@ -362,10 +363,17 @@ class Client(esURL: String) extends Logging {
    * @param index The index to search
    * @param type The optional type of document to search
    * @param query The query to execute.
+   * @param uriParameters The query uri parameters.
    */
-  def search(index: String, query: String, `type`: Option[String] = None): Future[Response] = {
+  def search(index: String, query: String, `type`: Option[String] = None,
+             uriParameters: SearchUriParameters = SearchUriParameters.withDefaults): Future[Response] = {
     val req = (url(esURL) / index / `type`.getOrElse("") / "_search").setBody(query.getBytes(StandardCharsets.UTF_8))
-    doRequest(req.POST)
+
+    val paramNames = List("search_type", "scroll")
+    val params = List(uriParameters.searchType.map(_.parameterValue), uriParameters.scroll)
+    val freq = addQueryParams(req, paramNames, params)
+
+    doRequest(freq.POST)
   }
 
   /**
@@ -473,6 +481,20 @@ class Client(esURL: String) extends Logging {
       }
     }
   }
+}
+
+sealed trait SearchType { def parameterValue: String }
+case object DfsQueryThenFetch extends SearchType { val parameterValue = "dfs_query_then_fetch" }
+case object DfsQueryAndFetch extends SearchType { val parameterValue = "dfs_query_and_fetch" }
+case object QueryThenFetch extends SearchType { val parameterValue = "query_then_fetch" }
+case object QueryAndFetch extends SearchType { val parameterValue = "query_and_fetch" }
+case object Count extends SearchType { val parameterValue = "count" }
+case object Scan extends SearchType { val parameterValue = "scan" }
+
+case class SearchUriParameters(searchType: Option[SearchType] = None,
+                               scroll: Option[String] = None)
+object SearchUriParameters {
+  val withDefaults = SearchUriParameters(None, None)
 }
 
 object Client {
