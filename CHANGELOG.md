@@ -1,3 +1,7 @@
+## 2.1.2
+Features:
+  - Add `uriParameters` arg to `search` to expose ElasticSearch's [URI Search](http://www.elastic.co/guide/en/elasticsearch/reference/1.4/search-uri-request.html) feature, thanks [mmollaverdi](https://github.com/mmollaverdi)
+
 ## 2.1.1
 Bugfixes:
   - Fix some incorrect documention, thanks [mmollaverdi](https://github.com/mmollaverdi)

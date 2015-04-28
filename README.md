@@ -49,7 +49,7 @@ Version 2.1.0 uses Elasticsearch 1.5.0
 
 ```
 // Add the Dep
-libraryDependencies += "wabisabi" %% "wabisabi" % "2.1.0"
+libraryDependencies += "wabisabi" %% "wabisabi" % "2.1.2"
 
 // And a the resolver
 resolvers += "gphat" at "https://raw.github.com/gphat/mvn-repo/master/releases/",
