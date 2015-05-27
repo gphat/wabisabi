@@ -377,6 +377,22 @@ class Client(esURL: String) extends Logging {
   }
 
   /**
+   * Scrolls for more documents.
+   *
+   * @param scroll The scroll parameter which tells Elasticsearch how long it should keep the “search context” alive
+   * @param scrollId The _scroll_id value returned in the response to the previous search or scroll request
+   */
+  def scroll(scroll: String, scrollId: String): Future[Response] = {
+    val req = (url(esURL) / "_search" / "scroll")
+
+    val paramNames = List("scroll", "scroll_id")
+    val params = List(Some(scroll), Some(scrollId))
+    val freq = addQueryParams(req, paramNames, params)
+
+    doRequest(freq.GET)
+  }
+
+  /**
    * Suggest completions based on analyzed documents.
    *
    * @param index The index to search
