@@ -230,7 +230,7 @@ class ClientSpec extends Specification with JsonMatchers {
       fistScrollIdOption must beSome
 
       val firstResultIds = extractResultIds(firstSearchResponse)
-      firstResultIds must beSome(List("bar1", "bar2"))
+      firstResultIds must_== Some(List("bar1", "bar2"))
 
       val secondSearchResponse = Await.result(client.scroll("1m", fistScrollIdOption.get), testDuration).getResponseBody
 
@@ -238,7 +238,7 @@ class ClientSpec extends Specification with JsonMatchers {
       secondScrollIdOption must beSome
 
       val secondResultIds = extractResultIds(secondSearchResponse)
-      secondResultIds must beSome(List("bar3"))
+      secondResultIds must_== Some(List("bar3"))
 
       deleteIndex(client)("foo")
     }
