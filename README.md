@@ -105,9 +105,16 @@ client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }", `type`
 client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}",
     uriParameters = SearchUriParameters(searchType = Some(Count)))
 
-// Or, search for all documents with a `Scan` search type and a given scroll timeout (used for quick retrieval of all documents without sorting):
-client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}",
+// To retrieve large numbers of documents (e.g. all the available documents) from elasticsearch efficiently without sorting,
+// issue a search request with `Scan` search type, followed by some scroll requests, as per [this](https://www.elastic.co/guide/en/elasticsearch/guide/master/scan-scroll.html) reference document.
+// A scroll timeout needs to be passed in both the initial search request and the following scroll requests:
+val searchResponse = client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}",
     uriParameters = SearchUriParameters(scroll = Some("1m"), searchType = Some(Scan)))
+val searchScrollId = // Extract _scroll_id from the search response body using your favourite JSON decoder library.
+val firstScrollResponse = client.scroll("1m", searchScrollId)
+val firstPageOfResults = // Extract results from the first scroll response.
+val nextScrollId = // Extract _scroll_id from the first scroll response.
+// Continue with subsequent scroll requests using the _scroll_id returned from previous requests until no more hits are returned.
 
 // Validate a query.
 client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }").map(_.getStatusCode) // Should be Future(200)

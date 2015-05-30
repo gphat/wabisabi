@@ -1,5 +1,6 @@
 package test
 
+import argonaut.Parse
 import org.specs2.matcher.JsonMatchers
 import org.specs2.mutable._
 import scala.concurrent.Await
@@ -199,6 +200,45 @@ class ClientSpec extends Specification with JsonMatchers {
 
       Await.result(client.search("foo", "{\"query\": { \"match_all\": {} } }", Some("bar"),
         SearchUriParameters(scroll = Some("1m"), searchType = Some(Scan))), testDuration).getResponseBody must contain("\"_scroll_id\"")
+
+      deleteIndex(client)("foo")
+    }
+
+    "scroll" in {
+
+      def extractScrollId(responseBody: String): Option[String] = for {
+        parsed <- Parse.parseOption(responseBody)
+        scrollId <- parsed.fieldOrEmptyString("_scroll_id").string
+      } yield scrollId
+
+      def extractResultIds(responseBody: String): Option[List[String]] = for {
+        parsed <- Parse.parseOption(responseBody)
+        outerHits <- parsed.field("hits")
+        innerHits <- outerHits.fieldOrEmptyArray("hits").array
+      } yield innerHits.map(_.fieldOrEmptyString("_id").stringOr(""))
+
+      val client = new Client(s"http://localhost:${server.httpPort}")
+
+      index(client)(index = "foo", `type` = "bar", id = "bar1", data = Some("{\"abc\":\"def1\"}"))
+      index(client)(index = "foo", `type` = "bar", id = "bar2", data = Some("{\"abc\":\"def2\"}"))
+      index(client)(index = "foo", `type` = "bar", id = "bar3", data = Some("{\"abc\":\"def3\"}"))
+
+      val firstSearchResponse = Await.result(client.search("foo", """{"query": { "match_all": {} }, "size": 2 }""", Some("bar"),
+        SearchUriParameters(scroll = Some("1m"))), testDuration).getResponseBody
+
+      val fistScrollIdOption = extractScrollId(firstSearchResponse)
+      fistScrollIdOption must beSome
+
+      val firstResultIds = extractResultIds(firstSearchResponse)
+      firstResultIds must_== Some(List("bar1", "bar2"))
+
+      val secondSearchResponse = Await.result(client.scroll("1m", fistScrollIdOption.get), testDuration).getResponseBody
+
+      val secondScrollIdOption = extractScrollId(secondSearchResponse)
+      secondScrollIdOption must beSome
+
+      val secondResultIds = extractResultIds(secondSearchResponse)
+      secondResultIds must_== Some(List("bar3"))
 
       deleteIndex(client)("foo")
     }
