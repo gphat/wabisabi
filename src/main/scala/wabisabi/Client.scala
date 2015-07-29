@@ -299,7 +299,7 @@ class Client(esURL: String) extends Logging {
     // timestamp, ttl, percolate, timeout, replication, consistency
     val baseRequest = (url(esURL) / index / `type`).setBody(data.getBytes(StandardCharsets.UTF_8))
 
-    val req = id.map({ id => baseRequest / id.get.toString }).getOrElse(baseRequest)
+    val req = id.map({ id => baseRequest / id }).getOrElse(baseRequest)
 
     // Handle the refresh param
     val freq = req.addQueryParameter("refresh", if(refresh) { "true" } else { "false" })
@@ -322,14 +322,10 @@ class Client(esURL: String) extends Logging {
     index: String, `type`: String, id: String, data: String,
     refresh: Boolean = false
   ): Future[Response] = {
-    val req = (url(esURL) / index / `type` / id / "_update").setBody(s"{\"doc\": ${data.getBytes(StandardCharsets.UTF_8)}, \"doc_as_upsert\":true}")
+    val req = (url(esURL) / index / `type` / id / "_update").setBody("{\"doc\":"+data.getBytes(StandardCharsets.UTF_8).toString+", \"doc_as_upsert\":true}")
 
     // Handle the refresh param
-    val freq = req.addQueryParameter("refresh", if (refresh) {
-      "true"
-    } else {
-      "false"
-    })
+    val freq = req.addQueryParameter("refresh", (if(refresh){"true"} else {"false"}))
 
     doRequest(freq.POST)
   }
