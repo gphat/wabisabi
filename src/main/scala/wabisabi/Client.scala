@@ -306,6 +306,33 @@ class Client(esURL: String) extends Logging {
 
     id.map({ i => doRequest(freq.PUT) }).getOrElse(doRequest(freq.POST))
   }
+  
+  /**
+   * Upsert a document.
+   *
+   * Adds or updates a JSON documented of the specified type in the specified
+   * index using https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update.html?q=update#upserts
+   * @param index The index in which to place the document
+   * @param type The type of document to be indexed
+   * @param id The id of the document. Specifying None will trigger automatic ID generation by ElasticSearch
+   * @param data The document to index, which should be a JSON string
+   * @param refresh If true then ElasticSearch will refresh the index so that the indexed document is immediately searchable.
+   */
+  def docAsUpsert(
+    index: String, `type`: String, id: String, data: String,
+    refresh: Boolean = false
+  ): Future[Response] = {
+    val req = (url(esURL) / index / `type` / id / "_update").setBody(s"{\"doc\": ${data.getBytes(StandardCharsets.UTF_8)}, \"doc_as_upsert\":true}")
+
+    // Handle the refresh param
+    val freq = req.addQueryParameter("refresh", if (refresh) {
+      "true"
+    } else {
+      "false"
+    })
+
+    doRequest(freq.POST)
+  }
 
   /**
    * Put a mapping for a list of indices.
