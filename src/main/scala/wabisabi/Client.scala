@@ -486,8 +486,7 @@ class Client(esURL: String) extends Logging {
    */
   private def doRequest(req: Req) = {
     val breq = req.toRequest
-    debug("[wabisabi] URL : %s: %s".format(breq.getMethod, breq.getUrl))
-    debug("[wabisabi] parameter : %s".format(breq.getParams.toString))
+    debug("%s: %s".format(breq.getMethod, breq.getUrl))
     Http(req.setHeader("Content-type", "application/json; charset=utf-8"))
   }
 
