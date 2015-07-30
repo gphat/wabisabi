@@ -322,7 +322,7 @@ class Client(esURL: String) extends Logging {
     index: String, `type`: String, id: String, data: String,
     refresh: Boolean = false
   ): Future[Response] = {
-    val req = (url(esURL) / index / `type` / id / "_update").setBody("{\"doc\":"+data.getBytes(StandardCharsets.UTF_8).toString+", \"doc_as_upsert\":true}")
+    val req = (url(esURL) / index / `type` / id / "_update").setBody(("{\"doc\":"+data+", \"doc_as_upsert\":true}").getBytes(StandardCharsets.UTF_8))
 
     // Handle the refresh param
     val freq = req.addQueryParameter("refresh", (if(refresh){"true"} else {"false"}))
@@ -486,7 +486,8 @@ class Client(esURL: String) extends Logging {
    */
   private def doRequest(req: Req) = {
     val breq = req.toRequest
-    debug("%s: %s".format(breq.getMethod, breq.getUrl))
+    debug("[wabisabi] URL : %s: %s".format(breq.getMethod, breq.getUrl))
+    debug("[wabisabi] parameter : %s".format(breq.getParams.toString))
     Http(req.setHeader("Content-type", "application/json; charset=utf-8"))
   }
 
