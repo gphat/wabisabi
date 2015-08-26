@@ -2,11 +2,11 @@ organization := "wabisabi"
 
 name := "wabisabi"
 
-version := "2.1.3.1"
+version := "2.1.3"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.7"
 
-crossScalaVersions := Seq("2.10.4", "2.11.6")
+crossScalaVersions := Seq("2.10.4", "2.11.7")
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Yrangepos")
 
@@ -28,4 +28,5 @@ testOptions in Test ++= Seq(
   Tests.Setup( () => System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "warn"))
 )
 
-exportJars := true
+publishTo := Some(Resolver.file("file",  new File( "/Users/gphat/src/mvn-repo/releases" )) )
+
