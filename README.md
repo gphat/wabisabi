@@ -117,7 +117,7 @@ val nextScrollId = // Extract _scroll_id from the first scroll response.
 // Continue with subsequent scroll requests using the _scroll_id returned from previous requests until no more hits are returned.
 
 // Fetch all the documents by ids.
-// MGetUriParameters case class allows to specify the source fields in result documents.
+// MGetUriParameters case class allows you to specify the source fields in result documents.
 val mgetResponse = client.mget(index = "foo",`type` = Some("tweet"), query = "{\"ids\":[\"1\", \"2\"]}",
     uriParameters = MGetUriParameters(sourceFields = Seq("name", "age")))
 

@@ -520,7 +520,7 @@ object SearchUriParameters {
   val withDefaults = SearchUriParameters(None, None)
 }
 
-case class MGetUriParameters(sourceFields: Seq[String] = Nil)
+case class MGetUriParameters(sourceFields: Seq[String] = Seq.empty)
 
 object MGetUriParameters {
   val withDefaults = MGetUriParameters(Nil)
