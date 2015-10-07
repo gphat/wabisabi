@@ -172,10 +172,17 @@ class Client(esURL: String) extends Logging {
    * @param index The optional name of the index.
    * @param type The optional type of the document.
    * @param query The query to execute.
+   * @param uriParameters The query uri parameters.
    */
-  def mget(index: Option[String], `type`: Option[String], query: String): Future[Response] = {
+  def mget(index: Option[String], `type`: Option[String], query: String,
+    uriParameters: MGetUriParameters = MGetUriParameters.withDefaults): Future[Response] = {
     val req = (url(esURL) / index.getOrElse("") / `type`.getOrElse("") / "_mget").setBody(query.getBytes(StandardCharsets.UTF_8))
-    doRequest(req.POST)
+
+    val paramNames = List("_source")
+    val params = List(Option(uriParameters.sourceFields.map(_.trim).filter(_.nonEmpty).mkString(",")).filter(_.nonEmpty))
+    val freq = addQueryParams(req, paramNames, params)
+
+    doRequest(freq.POST)
   }
 
   /**
@@ -511,6 +518,12 @@ case class SearchUriParameters(searchType: Option[SearchType] = None,
                                scroll: Option[String] = None)
 object SearchUriParameters {
   val withDefaults = SearchUriParameters(None, None)
+}
+
+case class MGetUriParameters(sourceFields: Seq[String] = Seq.empty)
+
+object MGetUriParameters {
+  val withDefaults = MGetUriParameters(Nil)
 }
 
 object Client {

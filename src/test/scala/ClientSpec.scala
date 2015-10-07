@@ -122,6 +122,30 @@ class ClientSpec extends Specification with JsonMatchers {
         deleteIndex(client)("foo")
       }
 
+      "with index, type and some specified fields using source uri param" in {
+        val client = new Client(s"http://localhost:${server.httpPort}")
+
+        index(client)(index = "foo", `type` = "bar", id = "1",
+          data = Some("{\"name\":\"Jon Snow\", \"age\":18, \"address\":\"Winterfell\"}"))
+        index(client)(index = "foo", `type` = "bar", id = "2",
+          data = Some("{\"name\":\"Arya Stark\", \"age\":14, \"address\":\"Winterfell\"}"))
+
+        val body = Await.result(client.mget(index = Some("foo"), `type` = Some("bar"), query =
+          """
+            |{
+            | "ids" : ["1", "2"]
+            |}
+          """.stripMargin, MGetUriParameters(Seq("name ", "", " address"))), testDuration).getResponseBody
+
+        body must / ("docs") /# 0 / "_source" / ("name" -> "Jon Snow") and
+          / ("docs") /# 0 / "_source" / ("address" -> "Winterfell") and
+          / ("docs") /# 1 / "_source" / ("name" -> "Arya Stark") and
+          / ("docs") /# 1 / "_source" / ("address" -> "Winterfell") and
+          not contain "age"
+
+        deleteIndex(client)("foo")
+      }
+
       "with index" in {
         val client = new Client(s"http://localhost:${server.httpPort}")
 
@@ -174,6 +198,7 @@ class ClientSpec extends Specification with JsonMatchers {
         deleteIndex(client)("foo1")
         deleteIndex(client)("foo2")
       }
+
     }
 
     "search for a document" in {
