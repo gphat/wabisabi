@@ -1,3 +1,7 @@
+## 2.1.4
+Features:
+  - Add a `uriParameters` argument to `mget` to get specific fields from the documents via [source filtering](https://www.elastic.co/guide/en/elasticsearch/reference/1.4/docs-multi-get.html#mget-source-filtering), thanks [SanCoder-Q](https://github.com/SanCoder-Q)
+
 ## 2.1.2
 Features:
   - Add `uriParameters` arg to `search` to expose ElasticSearch's [URI Search](http://www.elastic.co/guide/en/elasticsearch/reference/1.4/search-uri-request.html) feature, thanks [mmollaverdi](https://github.com/mmollaverdi)

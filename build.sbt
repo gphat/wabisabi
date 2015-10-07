@@ -2,7 +2,7 @@ organization := "wabisabi"
 
 name := "wabisabi"
 
-version := "2.1.3"
+version := "2.1.4"
 
 scalaVersion := "2.11.6"
 
@@ -29,4 +29,3 @@ testOptions in Test ++= Seq(
 )
 
 publishTo := Some(Resolver.file("file",  new File( "/Users/gphat/src/mvn-repo/releases" )) )
-
