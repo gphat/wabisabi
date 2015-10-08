@@ -18,7 +18,7 @@ libraryDependencies ++= Seq(
   "com.netaporter"    %% "scala-uri"            % "0.4.3",
   "org.specs2"        %% "specs2"               % "2.4.15"  % "test",
   "org.slf4j"         % "slf4j-simple"          % "1.7.9"   % "test",
-  "org.elasticsearch" % "elasticsearch"         % "1.5.0"   % "test",
+  "org.elasticsearch" % "elasticsearch"         % "1.7.0"   % "test",
   "io.argonaut"       %% "argonaut"             % "6.1"  % "test"
 )
 
