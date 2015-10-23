@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>Client - wabisabi.Client</title>
-          <meta name="description" content="Client - wabisabi.Client" />
-          <meta name="keywords" content="Client wabisabi.Client" />
+          <title>SearchType - wabisabi.SearchType</title>
+          <meta name="description" content="SearchType - wabisabi.SearchType" />
+          <meta name="keywords" content="SearchType wabisabi.SearchType" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -16,7 +16,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../index.html';
-            var hash = 'wabisabi.Client$';
+            var hash = 'wabisabi.SearchType';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -26,16 +26,14 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <a href="Client.html" title="See companion class"><img alt="Object/Class" src="../lib/object_to_class_big.png" /></a>
+        <img alt="Trait" src="../lib/trait_big.png" />
         <p id="owner"><a href="package.html" class="extype" name="wabisabi">wabisabi</a></p>
-        <h1><a href="Client.html" title="See companion class">Client</a></h1><h3><span class="morelinks"><div>
-            Related Docs:
-            <a href="Client.html" title="See companion class">class Client</a>
-            | <a href="package.html" class="extype" name="wabisabi">package wabisabi</a>
+        <h1>SearchType</h1><h3><span class="morelinks"><div>Related Doc:
+            <a href="package.html" class="extype" name="wabisabi">package wabisabi</a>
           </div></span></h3><span class="permalink">
-      <a href="../index.html#wabisabi.Client$" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -43,18 +41,21 @@
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">Client</span>
+        <span class="name">SearchType</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">Known Subclasses</span>
+            <div class="subClasses hiddenContent"><a href="Count$.html" class="extype" name="wabisabi.Count">Count</a>, <a href="DfsQueryAndFetch$.html" class="extype" name="wabisabi.DfsQueryAndFetch">DfsQueryAndFetch</a>, <a href="DfsQueryThenFetch$.html" class="extype" name="wabisabi.DfsQueryThenFetch">DfsQueryThenFetch</a>, <a href="QueryAndFetch$.html" class="extype" name="wabisabi.QueryAndFetch">QueryAndFetch</a>, <a href="QueryThenFetch$.html" class="extype" name="wabisabi.QueryThenFetch">QueryThenFetch</a>, <a href="Scan$.html" class="extype" name="wabisabi.Scan">Scan</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -71,7 +72,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="wabisabi.Client"><span>Client</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="wabisabi.SearchType"><span>SearchType</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -92,10 +93,30 @@
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="wabisabi.SearchType#parameterValue" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="parameterValue:String"></a>
+      <a id="parameterValue:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parameterValue</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../index.html#wabisabi.SearchType@parameterValue:String" title="Permalink" target="_top">
+        <img src="../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
 
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
@@ -108,7 +129,7 @@
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@!=(x$1:Any):Boolean" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -125,7 +146,7 @@
         <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@##():Int" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@##():Int" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -142,7 +163,7 @@
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@==(x$1:Any):Boolean" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@==(x$1:Any):Boolean" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -159,7 +180,7 @@
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@asInstanceOf[T0]:T0" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -176,7 +197,7 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@clone():Object" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@clone():Object" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -199,7 +220,7 @@
         <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -216,7 +237,7 @@
         <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@equals(x$1:Any):Boolean" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -233,7 +254,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@finalize():Unit" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@finalize():Unit" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -256,7 +277,7 @@
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@getClass():Class[_]" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@getClass():Class[_]" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -273,7 +294,7 @@
         <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@hashCode():Int" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@hashCode():Int" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -290,7 +311,7 @@
         <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -307,7 +328,7 @@
         <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -324,7 +345,7 @@
         <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@notify():Unit" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@notify():Unit" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -341,31 +362,11 @@
         <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@notifyAll():Unit" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@notifyAll():Unit" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="wabisabi.Client#shutdown" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="shutdown():Unit"></a>
-      <a id="shutdown():Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">shutdown</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@shutdown():Unit" title="Permalink" target="_top">
-        <img src="../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Disconnects any remaining connections.</p><div class="fullcomment"><div class="comment cmt"><p>Disconnects any remaining connections. Both idle and active. If you are accessing
-Elasticsearch through a proxy that keeps connections alive this is useful.</p><p>If your application uses the dispatch library for other purposes, those connections
-will also terminate.
-</p></div></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -378,7 +379,7 @@ will also terminate.
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -395,7 +396,7 @@ will also terminate.
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@toString():String" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@toString():String" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -412,7 +413,7 @@ will also terminate.
         <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@wait():Unit" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@wait():Unit" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -435,7 +436,7 @@ will also terminate.
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -458,7 +459,7 @@ will also terminate.
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#wabisabi.Client$@wait(x$1:Long):Unit" title="Permalink" target="_top">
+      <a href="../index.html#wabisabi.SearchType@wait(x$1:Long):Unit" title="Permalink" target="_top">
         <img src="../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
