@@ -55,6 +55,8 @@ libraryDependencies += "wabisabi" %% "wabisabi" % "2.1.4"
 resolvers += "gphat" at "https://raw.github.com/gphat/mvn-repo/master/releases/",
 ```
 
+# API Docs
+
 See the [API docs here](http://gphat.github.io/wabisabi/api/index.html#package)!
 
 ## Example
