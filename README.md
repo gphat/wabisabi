@@ -47,7 +47,7 @@ Version 2.1.0 uses Elasticsearch 1.5.0
 
 # Using It
 
-```
+```scala
 // Add the Dep
 libraryDependencies += "wabisabi" %% "wabisabi" % "2.1.4"
 
@@ -59,7 +59,7 @@ See the [API docs here](http://gphat.github.io/wabisabi/api/index.html#package)!
 
 ## Example
 
-```
+```scala
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import wabisabi._
