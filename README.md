@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/gphat/wabisabi.svg?branch=master)](https://travis-ci.org/gphat/wabisabi)
 
-Wabisabi is a Scala [Elasticearch](http://www.elasticsearch.org/) client that
+Wabisabi is a Scala [Elasticsearch](http://www.elasticsearch.org/) client that
 uses the REST API and has no dependency on Elasticsearch itself. It is
 extremely minimal, eschewing any sort of parsing, formatting or other such
 complication. You can [read about why I wrote it if you like](http://onemogin.com/programming/oss/wabisabi-scala-http-client-for-elasticsearch.html).
@@ -17,13 +17,13 @@ to get the response but you can also check `getStatusCode` to verify something
 didn't go awry. Since the returned response object is wrapped in a Future, you would need to `map` over it to get a
 Future of response code or body, e.g.:
 
-```
+```scala
 val futureStatusCode: Future[Int] = client.verifyIndex("foo").map(_.getStatusCode)
 ```
 
 Or,
 
-```
+```scala
 val futureResponseBody: Future[String] = client.verifyIndex("foo").map(_.getResponseBody)
 ```
 
