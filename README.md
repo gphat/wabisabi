@@ -96,10 +96,10 @@ client.index(
 client.get("foo", "foo", "foo").map(_.getResponseBody)
 
 // Search for all documents.
-client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }").map(_.getResponseBody)
+client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}").map(_.getResponseBody)
 
 // Search for all documents of a specific type!
-client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }", `type`= "tweet").map(_.getResponseBody)
+client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}", `type`= "tweet").map(_.getResponseBody)
 
 // SearchUriParameters case class allows for customised search URI parameters, such as search_type to be passed in a search request as per [this](http://www.elastic.co/guide/en/elasticsearch/reference/current/search-uri-request.html) reference document.
 // The list of different search types, in addition to documentation on how each search type is executed by elasticsearch can be seen [here](http://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-search-type.html).
@@ -124,7 +124,7 @@ val mgetResponse = client.mget(index = "foo",`type` = Some("tweet"), query = "{\
     uriParameters = MGetUriParameters(sourceFields = Seq("name", "age")))
 
 // Validate a query.
-client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }").map(_.getStatusCode) // Should be Future(200)
+client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }}").map(_.getStatusCode) // Should be Future(200)
 
 // Explain a query.
 client.explain(index = "foo", `type` = "foo", id = "foo2", query = "{\"query\": { \"term\": { \"foo\":\"bar\"} } }")
@@ -139,7 +139,7 @@ client.delete("foo", "foo", "foo")
 client.deleteByQuery(Seq("foo"), Seq.empty[String], "{ \"match_all\": {} }")
 
 // Count the matches to a query
-client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }").map(_.getResponseBody)
+client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }}").map(_.getResponseBody)
 
 // Delete the index
 client.deleteIndex("foo")
