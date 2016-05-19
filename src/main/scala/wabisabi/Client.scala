@@ -9,8 +9,10 @@ import java.nio.charset.StandardCharsets
 import com.netaporter.uri.Uri
 import com.netaporter.uri.dsl._
 
-class Client(esURL: String) extends Logging {
+class Client(esURL: String, _headers:Map[String, String] = Map()) extends Logging {
 
+  val headers = _headers + ("Content-type" -> "application/json; charset=utf-8")
+  
   // XXX update, percolate, more like this,
   //
 
@@ -471,7 +473,7 @@ class Client(esURL: String) extends Logging {
   private def doRequest(req: Req) = {
     val breq = req.toRequest
     debug("%s: %s".format(breq.getMethod, breq.getUrl))
-    Http(req.setHeader("Content-type", "application/json; charset=utf-8"))
+    Http(req <:< headers)
   }
 
 
