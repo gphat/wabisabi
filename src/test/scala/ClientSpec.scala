@@ -57,6 +57,17 @@ class ClientSpec extends Specification with JsonMatchers {
       deleteIndex(client)("foo")
     }
 
+     "upsert using docAsUpsert" in {
+         val client = new Client(s"http://localhost:${server.httpPort}")
+         createIndex(client)("foo")
+         Await.result(client.docAsUpsert(
+             id = "123",
+             index = "foo", `type` = "bar",
+             data = "{\"abc\":\"def1\"}", refresh = true
+         ), testDuration).getResponseBody must contain("\"_version\"")
+         deleteIndex(client)("foo")
+     }
+
     "create and delete aliases" in {
       val client = new Client(s"http://localhost:${server.httpPort}")
 
