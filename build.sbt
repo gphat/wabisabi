@@ -2,8 +2,6 @@ organization := "com.github.gphat"
 
 name := "wabisabi"
 
-version := "2.1.5"
-
 scalaVersion := "2.11.7"
 
 crossScalaVersions := Seq("2.10.4", "2.11.7")
