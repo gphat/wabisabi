@@ -1,8 +1,8 @@
-organization := "wabisabi"
+organization := "com.github.gphat"
 
 name := "wabisabi"
 
-version := "2.1.4"
+version := "2.1.5"
 
 scalaVersion := "2.11.7"
 
@@ -28,4 +28,4 @@ testOptions in Test ++= Seq(
   Tests.Setup( () => System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "warn"))
 )
 
-publishTo := Some(Resolver.file("file",  new File( "/Users/gphat/src/mvn-repo/releases" )) )
+Publish.settings

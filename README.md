@@ -35,24 +35,14 @@ scala 2.11.
 
 ## Notes
 
-Wabisabi was tested against Elasticsearch >= 1.4.0.
-
-Version 2.0.0 switched to returning `Future[Response]` rather than `Future[String]`
-so that errors can be handled.
-
 This does not implement every piece of the Elasticsearch API. I will add other
 bits as needed or as patches arrive.
-
-Version 2.1.0 uses Elasticsearch 1.5.0
 
 # Using It
 
 ```scala
 // Add the Dep
 libraryDependencies += "wabisabi" %% "wabisabi" % "2.1.4"
-
-// And a the resolver
-resolvers += "gphat" at "https://raw.github.com/gphat/mvn-repo/master/releases/",
 ```
 
 # API Docs
