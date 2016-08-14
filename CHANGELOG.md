@@ -1,3 +1,10 @@
+## 2.1.6
+Bugfixes
+- Fixed some examples via [#38](https://github.com/gphat/wabisabi/pull/38), thanks [karanveerm](https://github.com/karanveerm)!
+
+Features
+- Clients can now be instantiated with headers to facilitate authentication via [#39](https://github.com/gphat/wabisabi/pull/39), thanks [gnomff](https://github.com/gnomff)!
+
 ## 2.1.5
 Changes:
   - Release stuff, moving to maven central.
