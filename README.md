@@ -42,7 +42,7 @@ bits as needed or as patches arrive.
 
 ```scala
 // Add the Dep
-libraryDependencies += "wabisabi" %% "wabisabi" % "2.1.4"
+libraryDependencies += "wabisabi" %% "wabisabi" % "2.1.6"
 ```
 
 # API Docs
