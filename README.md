@@ -86,7 +86,7 @@ client.index(
 client.get("foo", "foo", "foo").map(_.getResponseBody)
 
 // Search for all documents.
-client.search(index = "foo", query = "{\"query\": { "match_all\": {}}}").map(_.getResponseBody)
+client.search(index = "foo", query = "{\"query\": {\"match_all\": {}}}").map(_.getResponseBody)
 
 // Search for all documents of a specific type!
 client.search(index = "foo", query = "{\"query\": {\"match_all\": {}}}", `type`= "tweet").map(_.getResponseBody)
