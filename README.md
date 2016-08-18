@@ -86,21 +86,21 @@ client.index(
 client.get("foo", "foo", "foo").map(_.getResponseBody)
 
 // Search for all documents.
-client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}").map(_.getResponseBody)
+client.search(index = "foo", query = "{\"query\": { \"match_all\": {} } }").map(_.getResponseBody)
 
 // Search for all documents of a specific type!
-client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}", `type`= "tweet").map(_.getResponseBody)
+client.search(index = "foo", query = "{\"query\": { \"match_all\": {} } }", `type`= "tweet").map(_.getResponseBody)
 
 // SearchUriParameters case class allows for customised search URI parameters, such as search_type to be passed in a search request as per [this](http://www.elastic.co/guide/en/elasticsearch/reference/current/search-uri-request.html) reference document.
 // The list of different search types, in addition to documentation on how each search type is executed by elasticsearch can be seen [here](http://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-search-type.html).
 // For example, to search for all documents with `Count` search type:
-client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}",
+client.search(index = "foo", query = "{\"query\": { \"match_all\": {} } }",
     uriParameters = SearchUriParameters(searchType = Some(Count)))
 
 // To retrieve large numbers of documents (e.g. all the available documents) from elasticsearch efficiently without sorting,
 // issue a search request with `Scan` search type, followed by some scroll requests, as per [this](https://www.elastic.co/guide/en/elasticsearch/guide/master/scan-scroll.html) reference document.
 // A scroll timeout needs to be passed in both the initial search request and the following scroll requests:
-val searchResponse = client.search(index = "foo", query = "{\"query\": { \"match_all\": {} }}",
+val searchResponse = client.search(index = "foo", query = "{\"query\": { \"match_all\": {} } }",
     uriParameters = SearchUriParameters(scroll = Some("1m"), searchType = Some(Scan)))
 val searchScrollId = // Extract _scroll_id from the search response body using your favourite JSON decoder library.
 val firstScrollResponse = client.scroll("1m", searchScrollId)
@@ -114,7 +114,7 @@ val mgetResponse = client.mget(index = "foo",`type` = Some("tweet"), query = "{\
     uriParameters = MGetUriParameters(sourceFields = Seq("name", "age")))
 
 // Validate a query.
-client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} }}").map(_.getStatusCode) // Should be Future(200)
+client.validate(index = "foo", query = "{\"query\": { \"match_all\": {} } }").map(_.getStatusCode) // Should be Future(200)
 
 // Explain a query.
 client.explain(index = "foo", `type` = "foo", id = "foo2", query = "{\"query\": { \"term\": { \"foo\":\"bar\"} } }")
@@ -126,10 +126,10 @@ client.suggest(index = "foo", query = "{\"suggest\": {\"text\": \"bar\", \"compl
 client.delete("foo", "foo", "foo")
 
 // Delete by query, if you prefer
-client.deleteByQuery(Seq("foo"), Seq.empty[String], "{ \"match_all\": {} }")
+client.deleteByQuery(Seq("foo"), Seq.empty[String], "{\"query\": { \"match_all\": {} } }")
 
 // Count the matches to a query
-client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} }}").map(_.getResponseBody)
+client.count(Seq("foo"), Seq("foo"), "{\"query\": { \"match_all\": {} } }").map(_.getResponseBody)
 
 // Delete the index
 client.deleteIndex("foo")
