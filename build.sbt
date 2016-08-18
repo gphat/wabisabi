@@ -26,4 +26,6 @@ testOptions in Test ++= Seq(
   Tests.Setup( () => System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "warn"))
 )
 
+releasePublishArtifactsAction := PgpKeys.publishSigned.value
+
 Publish.settings
