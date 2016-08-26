@@ -1,3 +1,8 @@
+## 2.1.8
+Changes:
+  - Lazily build request object used for debugging to prevent wasted time when debug is disabled via [#40](https://github.com/gphat/wabisabi/pull/40), thanks [SansCoder-Q](https://github.com/SanCoder-Q)!
+  - Bump dispatch dependency to 0.11.3 via [#42](https://github.com/gphat/wabisabi/pull/42), thanks [rafa89](https://github.com/rafa89)!
+
 ## 2.1.6
 Bugfixes
 - Fixed some examples via [#38](https://github.com/gphat/wabisabi/pull/38), thanks [karanveerm](https://github.com/karanveerm)!
