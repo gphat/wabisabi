@@ -471,7 +471,7 @@ class Client(esURL: String, _headers:Map[String, String] = Map()) extends Loggin
    * @param req The request
    */
   private def doRequest(req: Req) = {
-    val breq = req.toRequest
+    lazy val breq = req.toRequest
     debug("%s: %s".format(breq.getMethod, breq.getUrl))
     Http(req <:< headers)
   }
