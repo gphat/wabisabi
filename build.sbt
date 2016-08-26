@@ -11,7 +11,7 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Yrangepos")
 resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 
 libraryDependencies ++= Seq(
-  "net.databinder.dispatch" %% "dispatch-core"  % "0.11.2",
+  "net.databinder.dispatch" %% "dispatch-core"  % "0.11.3",
   "org.clapper"       %% "grizzled-slf4j"       % "1.0.2",
   "com.netaporter"    %% "scala-uri"            % "0.4.3",
   "org.specs2"        %% "specs2"               % "2.4.15"  % "test",
