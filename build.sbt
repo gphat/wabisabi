@@ -2,9 +2,9 @@ organization := "com.github.gphat"
 
 name := "wabisabi"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
-crossScalaVersions := Seq("2.10.4", "2.11.7")
+crossScalaVersions := Seq("2.10.4", "2.11.8")
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Yrangepos")
 
@@ -27,5 +27,7 @@ testOptions in Test ++= Seq(
 )
 
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
+
+releaseCrossBuild := true
 
 Publish.settings
