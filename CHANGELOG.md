@@ -1,3 +1,8 @@
+## 2.1.9
+Changes:
+  - Bump to Scala 2.11.8
+  - Release fuckery
+
 ## 2.1.8
 Changes:
   - Lazily build request object used for debugging to prevent wasted time when debug is disabled via [#40](https://github.com/gphat/wabisabi/pull/40), thanks [SansCoder-Q](https://github.com/SanCoder-Q)!
