@@ -11,7 +11,7 @@ Wabisabi is based on the [dispatch](http://dispatch.databinder.net/Dispatch.html
 asynchronous HTTP library. Therefore, all of the returned values are
 `Future[Response]`.
 
-The returned object is a [Response](http://sonatype.github.io/async-http-client/apidocs/reference/com/ning/http/client/Response.html)
+The returned object is a [Response](https://asynchttpclient.github.io/async-http-client/apidocs/reference/com/ning/http/client/Response.html)
 from the async-http-client library. Normally you'll want to use `getResponseBody`
 to get the response but you can also check `getStatusCode` to verify something
 didn't go awry. Since the returned response object is wrapped in a Future, you would need to `map` over it to get a
