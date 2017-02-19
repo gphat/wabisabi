@@ -9,10 +9,11 @@ import java.nio.charset.StandardCharsets
 import com.netaporter.uri.Uri
 import com.netaporter.uri.dsl._
 
-class Client(esURL: String, _headers:Map[String, String] = Map()) extends Logging {
+class Client(esURL: String, timeout: Int = 60000, _headers:Map[String, String] = Map()) extends Logging {
 
+  val http = Http.configure(_.setRequestTimeout(timeout))
   val headers = _headers + ("Content-type" -> "application/json; charset=utf-8")
-  
+
   // XXX update, percolate, more like this,
   //
 
