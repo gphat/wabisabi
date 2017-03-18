@@ -17,7 +17,8 @@ libraryDependencies ++= Seq(
   "org.specs2"        %% "specs2-core"          % "3.8.9"   % "test",
   "org.specs2"        %% "specs2-matcher-extra" % "3.8.9"   % "test",
   "org.slf4j"         % "slf4j-simple"          % "1.7.9"   % "test",
-  "org.elasticsearch" % "elasticsearch"         % "1.7.0"   % "test",
+  "org.elasticsearch" % "elasticsearch"         % "5.2.2"   % "test",
+  "org.apache.logging.log4j" % "log4j-api"      % "2.8.1"   % "test",
   "io.argonaut"       %% "argonaut"             % "6.2-RC2" % "test"
 )
 
