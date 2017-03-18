@@ -309,7 +309,7 @@ class Client(esURL: String, timeout: Int = 60000, _headers:Map[String, String] =
     // timestamp, ttl, percolate, timeout, replication, consistency
     val baseRequest = (url(esURL) / index / `type`).setBody(data.getBytes(StandardCharsets.UTF_8))
 
-    val req = id.map({ id => baseRequest / id }).getOrElse(baseRequest)
+    val req = id.map({ id => baseRequest / id.get.toString }).getOrElse(baseRequest)
 
     // Handle the refresh param
     val freq = req.addQueryParameter("refresh", if(refresh) { "true" } else { "false" })
