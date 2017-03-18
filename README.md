@@ -31,7 +31,7 @@ val futureResponseBody: Future[String] = client.verifyIndex("foo").map(_.getResp
 
 Depends on [dispatch](http://dispatch.databinder.net/Dispatch.html) and
 [grizzled-slf4j](http://software.clapper.org/grizzled-slf4j/). It's compiled for
-scala 2.11.
+scala 2.11 and 2.12.
 
 ## Notes
 
@@ -42,7 +42,7 @@ bits as needed or as patches arrive.
 
 ```scala
 // Add the Dep
-libraryDependencies += "com.github.gphat" %% "wabisabi" % "2.1.9"
+libraryDependencies += "com.github.gphat" %% "wabisabi" % "2.2.0"
 ```
 
 # API Docs
