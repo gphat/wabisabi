@@ -1,3 +1,7 @@
+## 2.2.0
+Changes:
+  - Bump to Scala 2.12, including various deps
+
 ## 2.1.9
 Changes:
   - Bump to Scala 2.11.8
