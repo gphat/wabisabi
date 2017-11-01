@@ -70,10 +70,9 @@ client.verifyIndex("foo").map(_.getStatusCode) // Should be Future(200)
 // Get mapping
 client.getMapping(indices = Seq("foo"), types = Seq("bar"))
 
-// Put mapping, optionally ignore conflicts
+// Put mapping
 client.putMapping(indices = Seq("foo"), `type` = "bar",
-  body = "{\"bar\": {\"properties\": {\"baz\": {\"type\": \"string\"}}}}",
-  ignoreConflicts = true
+  body = "{\"bar\": {\"properties\": {\"baz\": {\"type\": \"string\"}}}}"
 )
 
 // Add a document to the index.
