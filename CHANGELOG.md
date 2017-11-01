@@ -1,3 +1,7 @@
+## 2.2.1
+Changes:
+  - Remove the `ignore_conflicts` option via [#53](https://github.com/gphat/wabisabi/pull/53), thanks [SanCoder-Q](https://github.com/SanCoder-Q)!
+
 ## 2.2.0
 Changes:
   - Bump to Scala 2.12, including various deps
